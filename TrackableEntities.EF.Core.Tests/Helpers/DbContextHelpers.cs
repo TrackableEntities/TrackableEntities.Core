@@ -10,7 +10,7 @@ namespace TrackableEntities.EF.Core.Tests.Helpers
 {
     public static class DbContextHelpers
     {
-        public static void TraverseGraph(this DbContext context, object rootEntity, 
+        public static void TraverseGraph(this DbContext context, object rootEntity,
             Action<EntityEntryGraphNode> callback)
         {
             IStateManager stateManager = context.Entry(rootEntity).GetInfrastructure().StateManager;
@@ -27,7 +27,10 @@ namespace TrackableEntities.EF.Core.Tests.Helpers
             ITrackable item, EntityState? entityState = null)
         {
             var entityStates = new List<EntityState>();
-            context.TraverseGraph(item, n => entityStates.Add(n.Entry.State));
+            context.TraverseGraph(item, n =>
+            {
+                entityStates.Add(n.Entry.State);
+            });
             return entityStates;
         }
 
@@ -36,8 +39,7 @@ namespace TrackableEntities.EF.Core.Tests.Helpers
         {
             context.TraverseGraph(item, n =>
             {
-                var trackable = n.Entry.Entity as ITrackable;
-                if (trackable != null)
+                if (n.Entry.Entity is ITrackable trackable)
                 {
                     trackable.TrackingState = trackingState;
                 }

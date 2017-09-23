@@ -1618,7 +1618,6 @@ namespace TrackableEntities.EF.Core.Tests
 			Assert.NotNull(customer.CustomerSetting);
 		}
 
-        // TODO: remove (replaced by Apply_Changes_With_State_Interceptor_Should_One_To_One_Entities_State)
         [Fact]
 		public void Apply_Changes_Should_Mark_Deleted_Customer_As_Deleted_And_Unchanged_Setting_As_Deleted()
 		{
@@ -1641,7 +1640,6 @@ namespace TrackableEntities.EF.Core.Tests
 			Assert.Null(customer.CustomerSetting);
 		}
 
-        // TODO: remove (replaced by Apply_Changes_With_State_Interceptor_Should_One_To_One_Entities_State)
         [Fact]
 		public void Apply_Changes_Should_Mark_Deleted_Customer_As_Deleted_And_Added_Setting_As_Deleted()
 		{
@@ -1664,7 +1662,6 @@ namespace TrackableEntities.EF.Core.Tests
 			Assert.Null(customer.CustomerSetting);
 		}
 
-        // TODO: remove (replaced by Apply_Changes_With_State_Interceptor_Should_One_To_One_Entities_State)
         [Fact]
 		public void Apply_Changes_Should_Mark_Deleted_Customer_As_Deleted_And_Deleted_Setting_As_Deleted()
 		{

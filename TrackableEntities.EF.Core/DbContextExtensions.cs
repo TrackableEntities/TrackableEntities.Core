@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using TrackableEntities.Common.Core;
 
@@ -28,8 +29,23 @@ namespace TrackableEntities.EF.Core
                     && node.SourceEntry.Entity is ITrackable parent
                     && (parent.TrackingState == TrackingState.Added || parent.TrackingState == TrackingState.Deleted))
                 {
-                    node.Entry.State = parent.TrackingState.ToEntityState();
-                    return;
+                    if (parent.TrackingState == TrackingState.Added)
+                    {
+                        node.Entry.State = TrackingState.Added.ToEntityState();
+                        return;
+                    }
+                    if (parent.TrackingState == TrackingState.Deleted)
+                    {
+                        try
+                        {
+                            node.Entry.State = TrackingState.Deleted.ToEntityState();
+                        }
+                        catch (InvalidOperationException e)
+                        {
+                            throw new InvalidOperationException(Constants.ExceptionMessages.DeletedWithAddedChildren, e);
+                        }
+                        return;
+                    }
                 }
                 
                 // Set entity state to tracking state

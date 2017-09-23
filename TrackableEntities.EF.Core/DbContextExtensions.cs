@@ -25,14 +25,14 @@ namespace TrackableEntities.EF.Core
                 if (!(node.Entry.Entity is ITrackable trackable)) return;
 
                 // Get related parent entity
-                if (node.SourceEntry?.Entity is ITrackable parent)
+                if (node.SourceEntry != null)
                 {
                     var relationship = node.InboundNavigation?.GetRelationshipType();
                     switch (relationship)
                     {
                         case RelationshipType.OneToOne:
                             // If parent is added, set to added
-                            if (parent.TrackingState == TrackingState.Added)
+                            if (node.SourceEntry.State == EntityState.Added)
                             {
                                 SetEntityState(node.Entry, TrackingState.Added.ToEntityState(), trackable);
                             }
@@ -43,13 +43,13 @@ namespace TrackableEntities.EF.Core
                             return;
                         case RelationshipType.ManyToOne:
                             // If parent is added, set to added
-                            if (parent.TrackingState == TrackingState.Added)
+                            if (node.SourceEntry.State == EntityState.Added)
                             {
                                 SetEntityState(node.Entry, TrackingState.Added.ToEntityState(), trackable);
                                 return;
                             }
                             // If parent is deleted, set to deleted
-                            if (parent.TrackingState == TrackingState.Deleted)
+                            if (node.SourceEntry.State == EntityState.Deleted)
                             {
                                 try
                                 {

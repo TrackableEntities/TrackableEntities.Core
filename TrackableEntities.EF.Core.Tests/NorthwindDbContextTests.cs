@@ -1503,7 +1503,6 @@ namespace TrackableEntities.EF.Core.Tests
 			// Assert
 			Assert.Equal(EntityState.Unchanged, context.Entry(customer).State);
 			Assert.Equal(EntityState.Deleted, context.Entry(setting).State);
-			Assert.Null(customer.CustomerSetting);
 		}
 
 		[Fact]

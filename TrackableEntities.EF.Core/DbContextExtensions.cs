@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 using TrackableEntities.Common.Core;
 
 namespace TrackableEntities.EF.Core
@@ -23,41 +24,50 @@ namespace TrackableEntities.EF.Core
                 // Exit if not ITrackable
                 if (!(node.Entry.Entity is ITrackable trackable)) return;
 
-                // If ManyToOne relationship and parent is Added or Deleted,
-                // set tracking state from parent.
-                if (node.InboundNavigation?.GetRelationshipType() == RelationshipType.ManyToOne
-                    && node.SourceEntry.Entity is ITrackable parent
-                    && (parent.TrackingState == TrackingState.Added || parent.TrackingState == TrackingState.Deleted))
+                // Get related parent entity
+                if (node.SourceEntry?.Entity is ITrackable parent)
                 {
-                    if (parent.TrackingState == TrackingState.Added)
+                    var relationship = node.InboundNavigation?.GetRelationshipType();
+                    switch (relationship)
                     {
-                        node.Entry.State = TrackingState.Added.ToEntityState();
-                        return;
-                    }
-                    if (parent.TrackingState == TrackingState.Deleted)
-                    {
-                        try
-                        {
-                            node.Entry.State = TrackingState.Deleted.ToEntityState();
-                        }
-                        catch (InvalidOperationException e)
-                        {
-                            throw new InvalidOperationException(Constants.ExceptionMessages.DeletedWithAddedChildren, e);
-                        }
-                        return;
+                        case RelationshipType.OneToOne:
+                            // If parent is added, set to added
+                            if (parent.TrackingState == TrackingState.Added)
+                            {
+                                SetEntityState(node.Entry, TrackingState.Added.ToEntityState(), trackable);
+                            }
+                            else
+                            {
+                                SetEntityState(node.Entry, trackable.TrackingState.ToEntityState(), trackable);
+                            }
+                            return;
+                        case RelationshipType.ManyToOne:
+                            // If parent is added, set to added
+                            if (parent.TrackingState == TrackingState.Added)
+                            {
+                                SetEntityState(node.Entry, TrackingState.Added.ToEntityState(), trackable);
+                                return;
+                            }
+                            // If parent is deleted, set to deleted
+                            if (parent.TrackingState == TrackingState.Deleted)
+                            {
+                                try
+                                {
+                                    // Will throw if there are added children
+                                    SetEntityState(node.Entry, TrackingState.Deleted.ToEntityState(), trackable);
+                                }
+                                catch (InvalidOperationException e)
+                                {
+                                    throw new InvalidOperationException(Constants.ExceptionMessages.DeletedWithAddedChildren, e);
+                                }
+                                return;
+                            }
+                            break;
                     }
                 }
-                
-                // Set entity state to tracking state
-                node.Entry.State = trackable.TrackingState.ToEntityState();
 
-                // Set modified properties
-                if (trackable.TrackingState == TrackingState.Modified 
-                    && trackable.ModifiedProperties != null)
-                {
-                    foreach (var property in trackable.ModifiedProperties)
-                        node.Entry.Property(property).IsModified = true;
-                }
+                // Set entity state to tracking state
+                SetEntityState(node.Entry, trackable.TrackingState.ToEntityState(), trackable);
             });
         }
 
@@ -71,6 +81,20 @@ namespace TrackableEntities.EF.Core
             // Apply changes to collection of items
             foreach (var item in items)
                 context.ApplyChanges(item);
+        }
+
+        private static void SetEntityState(EntityEntry entry, EntityState state, ITrackable trackable)
+        {
+            // Set entity state to tracking state
+            entry.State = state;
+
+            // Set modified properties
+            if (entry.State == EntityState.Modified
+                && trackable.ModifiedProperties != null)
+            {
+                foreach (var property in trackable.ModifiedProperties)
+                    entry.Property(property).IsModified = true;
+            }
         }
     }
 }

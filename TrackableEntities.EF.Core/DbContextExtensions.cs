@@ -19,8 +19,23 @@ namespace TrackableEntities.EF.Core
             // Recursively set entity state for DbContext entry
             context.ChangeTracker.TrackGraph(item, node =>
             {
+                // Exit if not ITrackable
                 if (!(node.Entry.Entity is ITrackable trackable)) return;
+
+                // If ManyToOne relationship and parent is Added or Deleted,
+                // set tracking state from parent.
+                if (node.InboundNavigation?.GetRelationshipType() == RelationshipType.ManyToOne
+                    && node.SourceEntry.Entity is ITrackable parent
+                    && (parent.TrackingState == TrackingState.Added || parent.TrackingState == TrackingState.Deleted))
+                {
+                    node.Entry.State = parent.TrackingState.ToEntityState();
+                    return;
+                }
+                
+                // Set entity state to tracking state
                 node.Entry.State = trackable.TrackingState.ToEntityState();
+
+                // Set modified properties
                 if (trackable.TrackingState == TrackingState.Modified 
                     && trackable.ModifiedProperties != null)
                 {

@@ -2,6 +2,20 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
+    <PackageId>TrackableEntities.Common.Core</PackageId>
+    <PackageVersion>1.0.0-alpha</PackageVersion>
+    <Authors>Tony Sneed</Authors>
+    <Description>Assembly containing ITrackable interface and TrackingState enum.</Description>
+    <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+    <PackageReleaseNotes>See: https://github.com/TrackableEntities/TrackableEntities.Core/releases/tag/v1.0.0-alpha1</PackageReleaseNotes>
+    <PackageTags>change-tracking entity-framework-core n-tier</PackageTags>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <Version>1.0.0-alpha</Version>
+    <PackageLicenseUrl>https://github.com/TrackableEntities/TrackableEntities.Core/blob/master/LICENSE</PackageLicenseUrl>
+    <PackageProjectUrl>https://github.com/TrackableEntities/TrackableEntities.Core</PackageProjectUrl>
+    <PackageIconUrl>http://trackableentities.github.io/images/tracking.png</PackageIconUrl>
+    <RepositoryUrl></RepositoryUrl>
+    <Product>Trackable Entities Common</Product>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">

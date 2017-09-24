@@ -12,12 +12,12 @@ namespace TrackableEntities.EF.Core.Tests
     [Collection("NorthwindDbContext")]
     public class NorthwindDbContextTests
 	{
-        private readonly NorthwindDbContextFixture _fixture;
+            private readonly NorthwindDbContextFixture _fixture;
 
-        public NorthwindDbContextTests(NorthwindDbContextFixture fixture)
-        {
-            _fixture = fixture;
-        }
+            public NorthwindDbContextTests(NorthwindDbContextFixture fixture)
+            {
+                _fixture = fixture;
+            }
 
         #region Product: Single Entity
 
@@ -1011,95 +1011,106 @@ namespace TrackableEntities.EF.Core.Tests
 
         #region Employee-Territory: Many to Many
 
-        [Fact(Skip = "Many-to-Many")]
+        [Fact]
 		public void Apply_Changes_Should_Mark_Unchanged_Employee_As_Unchanged_And_Unchanged_Territories_As_Unchanged()
 		{
             // Arrange
             var context = _fixture.GetContext();
             var nw = new MockNorthwind();
 			var employee = nw.Employees[0];
-			//var territory1 = employee.Territories[0];
-			//var territory2 = employee.Territories[1];
-			//var territory3 = employee.Territories[2];
+            var territory1 = employee.EmployeeTerritories[0].Territory;
+            var territory2 = employee.EmployeeTerritories[1].Territory;
+            var territory3 = employee.EmployeeTerritories[2].Territory;
 
             // Act
             context.ApplyChanges(employee);
 
 			// Assert
 			Assert.Equal(EntityState.Unchanged, context.Entry(employee).State);
-			//Assert.Equal(EntityState.Unchanged, context.Entry(territory1).State);
-			//Assert.Equal(EntityState.Unchanged, context.Entry(territory2).State);
-			//Assert.Equal(EntityState.Unchanged, context.Entry(territory3).State);
-		}
+            Assert.Equal(EntityState.Unchanged, context.Entry(territory1).State);
+            Assert.Equal(EntityState.Unchanged, context.Entry(territory2).State);
+            Assert.Equal(EntityState.Unchanged, context.Entry(territory3).State);
+        }
 
-		[Fact(Skip = "Many-to-Many")]
-		public void Apply_Changes_Should_Mark_Unchanged_Employee_As_Unchanged_And_Modified_Territories_As_Modified()
+		[Fact]
+		public void Apply_Changes_Should_Mark_Unchanged_Employee_As_Unchanged_And_Territories_As_Added_Modified()
 		{
 			// Arrange
 			var context = _fixture.GetContext();
 			var nw = new MockNorthwind();
 			var employee = nw.Employees[0];
-			//var territory1 = employee.Territories[0];
-			//var territory2 = employee.Territories[1];
-			//var territory3 = employee.Territories[2];
-			//territory3.TrackingState = TrackingState.Modified;
+		    var territory1 = employee.EmployeeTerritories[0].Territory;
+		    var territory2 = employee.EmployeeTerritories[1].Territory;
+            territory1.TrackingState = TrackingState.Added;
+		    territory2.TrackingState = TrackingState.Modified;
 
-			// Act
-			context.ApplyChanges(employee);
+            // Act
+            context.ApplyChanges(employee);
 
 			// Assert
 			Assert.Equal(EntityState.Unchanged, context.Entry(employee).State);
-			//Assert.Equal(EntityState.Unchanged, context.Entry(territory1).State);
-			//Assert.Equal(EntityState.Unchanged, context.Entry(territory2).State);
-			//Assert.Equal(EntityState.Modified, context.Entry(territory3).State);
-		}
+            Assert.Equal(EntityState.Added, context.Entry(territory1).State);
+            Assert.Equal(EntityState.Modified, context.Entry(territory2).State);
+        }
 
-        [Fact(Skip = "Many-to-Many")]
-        public void Apply_Changes_Should_Mark_Unchanged_Employee_As_Unchanged_And_Added_Territories_Without_Employee_As_Unchanged()
+	    [Fact]
+	    public void Apply_Changes_Should_Mark_Unchanged_Employee_As_Unchanged_And_Deleted_Territory_As_Unchanged()
+	    {
+            // NOTE: Deleting a related M-M entity will simply mark it as unchanged,
+            // because it may have other related entities.
+
+	        // Arrange
+	        var context = _fixture.GetContext();
+	        var nw = new MockNorthwind();
+	        var employee = nw.Employees[0];
+	        var territory1 = employee.EmployeeTerritories[0].Territory;
+	        territory1.TrackingState = TrackingState.Deleted;
+
+	        // Act
+	        context.ApplyChanges(employee);
+
+	        // Assert
+	        Assert.Equal(EntityState.Unchanged, context.Entry(employee).State);
+	        Assert.Equal(EntityState.Unchanged, context.Entry(territory1).State);
+	    }
+
+	    [Fact]
+        public void Apply_Changes_Should_Mark_Unchanged_Employee_As_Unchanged_And_Added_EmployeeTerritories_As_Added()
         {
             // Arrange
             var context = _fixture.GetContext();
             var nw = new MockNorthwind();
             var employee = nw.Employees[0];
-            //var territory1 = employee.Territories[0];
-            //territory1.TrackingState = TrackingState.Added;
-
-            // Causes System.InvalidOperationException:
-            // The ObjectStateManager does not contain an ObjectStateEntry with a reference to an object of type 'TrackableEntities.EF.Tests.NorthwindModels.Employee'.
-            //territory1.Employees = new List<Employee>();
+            var empTerritory = employee.EmployeeTerritories[0];
+            empTerritory.TrackingState = TrackingState.Added;
 
             // Act
             context.ApplyChanges(employee);
 
             // Assert
             Assert.Equal(EntityState.Unchanged, context.Entry(employee).State);
-            //Assert.Equal(EntityState.Unchanged, context.Entry(territory1).State);
-            //Assert.True(context.RelatedItemHasBeenAdded(employee, territory1));
+            Assert.Equal(EntityState.Added, context.Entry(empTerritory).State);
         }
 
-        [Fact(Skip = "Many-to-Many")]
-        public void Apply_Changes_Should_Mark_Unchanged_Employee_As_Unchanged_And_Deleted_Territories_Without_Employee_As_Unchanged()
+        [Fact]
+        public void Apply_Changes_Should_Mark_Unchanged_Employee_As_Unchanged_And_Deleted_EmployeeTerritories_As_Deleted()
         {
             // Arrange
             var context = _fixture.GetContext();
             var nw = new MockNorthwind();
             var employee = nw.Employees[0];
-            //var territory1 = employee.Territories[0];
-            //territory1.TrackingState = TrackingState.Deleted;
-
-            // Remove employees from territories
-            //territory1.Employees = new List<Employee>();
+            var empTerritory = employee.EmployeeTerritories[0];
+            empTerritory.TrackingState = TrackingState.Deleted;
 
             // Act
             context.ApplyChanges(employee);
 
             // Assert
             Assert.Equal(EntityState.Unchanged, context.Entry(employee).State);
-            //Assert.Equal(EntityState.Unchanged, context.Entry(territory1).State);
-            //Assert.True(context.RelatedItemHasBeenRemoved(employee, territory1));
+            Assert.Equal(EntityState.Deleted, context.Entry(empTerritory).State);
         }
 
-        [Fact(Skip = "Many-to-Many")]
+        [Fact]
         public void Apply_Changes_Should_Mark_Unchanged_Employee_As_Unchanged_And_Unchanged_Territories_With_Modified_Area_As_Modified()
         {
             // Ensure that changes are applied across M-M relationships.
@@ -1108,329 +1119,252 @@ namespace TrackableEntities.EF.Core.Tests
             var context = _fixture.GetContext();
             var nw = new MockNorthwind();
             var employee = nw.Employees[0];
-            //var territory1 = employee.Territories[0];
-            //var territory2 = employee.Territories[1];
-            //var territory3 = employee.Territories[2];
+            var territory1 = employee.EmployeeTerritories[0].Territory;
+            var territory2 = employee.EmployeeTerritories[1].Territory;
+            var territory3 = employee.EmployeeTerritories[2].Territory;
             var area = new Area
             {
                 AreaId = 1,
                 AreaName = "Northern",
                 TrackingState = TrackingState.Modified
             };
-            //territory3.AreaId = 1;
-            //territory3.Area = area;
+            territory3.AreaId = 1;
+            territory3.Area = area;
 
             // Act
             context.ApplyChanges(employee);
 
             // Assert
             Assert.Equal(EntityState.Unchanged, context.Entry(employee).State);
-            //Assert.Equal(EntityState.Unchanged, context.Entry(territory1).State);
-            //Assert.Equal(EntityState.Unchanged, context.Entry(territory2).State);
-            //Assert.Equal(EntityState.Unchanged, context.Entry(territory3).State);
+            Assert.Equal(EntityState.Unchanged, context.Entry(territory1).State);
+            Assert.Equal(EntityState.Unchanged, context.Entry(territory2).State);
+            Assert.Equal(EntityState.Unchanged, context.Entry(territory3).State);
             Assert.Equal(EntityState.Modified, context.Entry(area).State);
         }
 
-        [Fact(Skip = "Many-to-Many")]
-		public void Apply_Changes_Should_Mark_Unchanged_Employee_As_Unchanged_And_Added_Territories_As_Unchanged()
-		{
-			// NOTE: With M-M properties there is no way to tell if the related entity is new or should 
-			// or simply be added to the relationship, because it is an independent association.
-			// Therefore, added children are added to the relationship and marked unchanged.
-
-			// Arrange
-			var context = _fixture.GetContext();
-			var nw = new MockNorthwind();
-			var employee = nw.Employees[0];
-			//var territory1 = employee.Territories[0];
-			//var territory2 = employee.Territories[1];
-			//var territory3 = employee.Territories[2];
-			var territory4 = nw.Territories[3];
-			territory4.TrackingState = TrackingState.Added;
-			//employee.Territories.Add(territory4);
-
-			// Act
-			context.ApplyChanges(employee);
-
-			// Assert
-			Assert.Equal(EntityState.Unchanged, context.Entry(employee).State);
-			//Assert.Equal(EntityState.Unchanged, context.Entry(territory1).State);
-			//Assert.Equal(EntityState.Unchanged, context.Entry(territory2).State);
-			//Assert.Equal(EntityState.Unchanged, context.Entry(territory3).State);
-			Assert.Equal(EntityState.Unchanged, context.Entry(territory4).State);
-			//Assert.True(context.RelatedItemHasBeenAdded(employee, territory4));
-		}
-
-		[Fact(Skip = "Many-to-Many")]
-		public void Apply_Changes_Should_Mark_Unchanged_Employee_As_Unchanged_And_Deleted_Territories_As_Unchanged()
-		{
-			// NOTE: With M-M properties there is no way to tell if the related entity should be deleted
-			// or simply removed from the relationship, because it is an independent association.
-			// Therefore, deleted children are removed from the relationship and marked unchanged.
-
-			// Arrange
-			var context = _fixture.GetContext();
-			var nw = new MockNorthwind();
-			var employee = nw.Employees[0];
-			//var territory1 = employee.Territories[0];
-			//var territory2 = employee.Territories[1];
-			//var territory3 = employee.Territories[2];
-			//territory3.TrackingState = TrackingState.Deleted;
-
-			// Act
-			context.ApplyChanges(employee);
-
-			// Assert
-			Assert.Equal(EntityState.Unchanged, context.Entry(employee).State);
-			//Assert.Equal(EntityState.Unchanged, context.Entry(territory1).State);
-			//Assert.Equal(EntityState.Unchanged, context.Entry(territory2).State);
-			//Assert.Equal(EntityState.Unchanged, context.Entry(territory3).State);
-			//Assert.True(context.RelatedItemHasBeenRemoved(employee, territory3));
-			//Assert.Equal(2, employee.Territories.Count);
-		}
-
-		[Fact(Skip = "Many-to-Many")]
+		[Fact]
 		public void Apply_Changes_Should_Mark_Added_Employee_As_Added_And_Unchanged_Territories_As_Unchanged()
 		{
-			// NOTE: Because parent is added, unchanged children will be added to M-M relation,
-			// even though the entities themselves are unchanged.
-
 			// Arrange
 			var context = _fixture.GetContext();
 			var nw = new MockNorthwind();
 			var employee = nw.Employees[0];
 			employee.TrackingState = TrackingState.Added;
-			//var territory1 = employee.Territories[0];
-			//var territory2 = employee.Territories[1];
-			//var territory3 = employee.Territories[2];
+		    var territory1 = employee.EmployeeTerritories[0].Territory;
+		    var territory2 = employee.EmployeeTerritories[1].Territory;
+		    var territory3 = employee.EmployeeTerritories[2].Territory;
 
-			// Act
-			context.ApplyChanges(employee);
-
-			// Assert
-			Assert.Equal(EntityState.Added, context.Entry(employee).State);
-			//Assert.Equal(EntityState.Unchanged, context.Entry(territory1).State);
-			//Assert.Equal(EntityState.Unchanged, context.Entry(territory2).State);
-			//Assert.Equal(EntityState.Unchanged, context.Entry(territory3).State);
-			//Assert.True(context.RelatedItemHasBeenAdded(employee, territory1));
-			//Assert.True(context.RelatedItemHasBeenAdded(employee, territory2));
-			//Assert.True(context.RelatedItemHasBeenAdded(employee, territory3));
-		}
-
-		[Fact(Skip = "Many-to-Many")]
-		public void Apply_Changes_Should_Mark_Added_Employee_As_Added_And_Modified_Territories_As_Modified()
-		{
-			// NOTE: Modified children of an added parent will remain modified,
-			// but they will be added to the M-M relation.
-
-			// Arrange
-			var context = _fixture.GetContext();
-			var nw = new MockNorthwind();
-			var employee = nw.Employees[0];
-			employee.TrackingState = TrackingState.Added;
-			//var territory1 = employee.Territories[0];
-			//var territory2 = employee.Territories[1];
-			//var territory3 = employee.Territories[2];
-			//territory3.TrackingState = TrackingState.Modified;
-
-			// Act
-			context.ApplyChanges(employee);
+            // Act
+            context.ApplyChanges(employee);
 
 			// Assert
 			Assert.Equal(EntityState.Added, context.Entry(employee).State);
-			//Assert.Equal(EntityState.Unchanged, context.Entry(territory1).State);
-			//Assert.Equal(EntityState.Unchanged, context.Entry(territory2).State);
-			//Assert.Equal(EntityState.Modified, context.Entry(territory3).State);
-			//Assert.True(context.RelatedItemHasBeenAdded(employee, territory1));
-			//Assert.True(context.RelatedItemHasBeenAdded(employee, territory2));
-			//Assert.True(context.RelatedItemHasBeenAdded(employee, territory3));
-		}
-
-		[Fact(Skip = "Many-to-Many")]
-		public void Apply_Changes_Should_Mark_Added_Employee_As_Added_And_Added_Territories_As_Unchanged()
-		{
-			// NOTE: Because parent is added, added children will be marked as unchanged
-			// but added to the M-M relation
-
-			// Arrange
-			var context = _fixture.GetContext();
-			var nw = new MockNorthwind();
-			var employee = nw.Employees[0];
-			employee.TrackingState = TrackingState.Added;
-			//var territory1 = employee.Territories[0];
-			//var territory2 = employee.Territories[1];
-			//var territory3 = employee.Territories[2];
-			var territory4 = nw.Territories[3];
-			territory4.TrackingState = TrackingState.Added;
-			//employee.Territories.Add(territory4);
-
-			// Act
-			context.ApplyChanges(employee);
-
-			// Assert
-			Assert.Equal(EntityState.Added, context.Entry(employee).State);
-			//Assert.Equal(EntityState.Unchanged, context.Entry(territory1).State);
-			//Assert.Equal(EntityState.Unchanged, context.Entry(territory2).State);
-			//Assert.Equal(EntityState.Unchanged, context.Entry(territory3).State);
-			Assert.Equal(EntityState.Unchanged, context.Entry(territory4).State);
-			//Assert.True(context.RelatedItemHasBeenAdded(employee, territory4));
-		}
-
-		[Fact(Skip = "Many-to-Many")]
-		public void Apply_Changes_Should_Mark_Added_Employee_As_Added_And_Deleted_Territories_As_Deleted()
-		{
-			// NOTE: If a deleted child is assocated with an added parent, 
-			// we will just ignore the delete and add the item, since this is unsupported.
-
-			// Arrange
-			var context = _fixture.GetContext();
-			var nw = new MockNorthwind();
-			var employee = nw.Employees[0];
-			employee.TrackingState = TrackingState.Added;
-			//var territory1 = employee.Territories[0];
-			//var territory2 = employee.Territories[1];
-			//var territory3 = employee.Territories[2];
-			//territory3.TrackingState = TrackingState.Deleted;
-
-			// Act
-			context.ApplyChanges(employee);
-
-			// Assert
-			Assert.Equal(EntityState.Added, context.Entry(employee).State);
-			//Assert.Equal(EntityState.Unchanged, context.Entry(territory1).State);
-			//Assert.Equal(EntityState.Unchanged, context.Entry(territory2).State);
-			//Assert.Equal(EntityState.Unchanged, context.Entry(territory3).State);
-			//Assert.True(context.RelatedItemHasBeenAdded(employee, territory3));
-		}
-
-		[Fact(Skip = "Many-to-Many")]
-		public void Apply_Changes_Should_Mark_Deleted_Employee_As_Deleted_And_Unchanged_Territories_As_Unchanged()
-		{
-			// NOTE: Because parent is deleted, unchanged children will be deleted from M-M relation,
-			// even though the entities themselves are unchanged.
-
-			// Arrange
-			var context = _fixture.GetContext();
-			var nw = new MockNorthwind();
-			var employee = nw.Employees[0];
-			employee.TrackingState = TrackingState.Deleted;
-			//var territory1 = employee.Territories[0];
-			//var territory2 = employee.Territories[1];
-			//var territory3 = employee.Territories[2];
-
-			// Act
-			context.ApplyChanges(employee);
-
-			// Assert
-			Assert.Equal(EntityState.Deleted, context.Entry(employee).State);
-			//Assert.Equal(EntityState.Unchanged, context.Entry(territory1).State);
-			//Assert.Equal(EntityState.Unchanged, context.Entry(territory2).State);
-			//Assert.Equal(EntityState.Unchanged, context.Entry(territory3).State);
-			//Assert.True(context.RelatedItemHasBeenRemoved(employee, territory1));
-			//Assert.True(context.RelatedItemHasBeenRemoved(employee, territory2));
-			//Assert.True(context.RelatedItemHasBeenRemoved(employee, territory3));
-			//Assert.Equal(0, employee.Territories.Count);
-		}
-
-		[Fact(Skip = "Many-to-Many")]
-		public void Apply_Changes_Should_Mark_Deleted_Employee_As_Deleted_And_Modified_Territories_As_Modified()
-		{
-			// NOTE: Modified children of a deleted parent will remain modified,
-			// but they will be removed from the M-M relation.
-
-			// Arrange
-			var context = _fixture.GetContext();
-			var nw = new MockNorthwind();
-			var employee = nw.Employees[0];
-			employee.TrackingState = TrackingState.Deleted;
-			//var territory1 = employee.Territories[0];
-			//var territory2 = employee.Territories[1];
-			//var territory3 = employee.Territories[2];
-			//territory3.TrackingState = TrackingState.Modified;
-
-			// Act
-			context.ApplyChanges(employee);
-
-			// Assert
-			Assert.Equal(EntityState.Deleted, context.Entry(employee).State);
-			//Assert.Equal(EntityState.Unchanged, context.Entry(territory1).State);
-			//Assert.Equal(EntityState.Unchanged, context.Entry(territory2).State);
-			//Assert.Equal(EntityState.Modified, context.Entry(territory3).State);
-			//Assert.True(context.RelatedItemHasBeenRemoved(employee, territory1));
-			//Assert.True(context.RelatedItemHasBeenRemoved(employee, territory2));
-			//Assert.True(context.RelatedItemHasBeenRemoved(employee, territory3));
-			//Assert.Equal(0, employee.Territories.Count);
-		}
-
-		[Fact(Skip = "Many-to-Many")]
-		public void Apply_Changes_Should_Mark_Deleted_Employee_As_Deleted_And_Added_Territories_As_Unchanged()
-		{
-			// NOTE: Because parent is deleted, added children will be marked as unchanged
-			// but removed from the M-M relation
-
-			// Arrange
-			var context = _fixture.GetContext();
-			var nw = new MockNorthwind();
-			var employee = nw.Employees[0];
-			employee.TrackingState = TrackingState.Deleted;
-			//var territory1 = employee.Territories[0];
-			//var territory2 = employee.Territories[1];
-			//var territory3 = employee.Territories[2];
-			var territory4 = nw.Territories[3];
-			territory4.TrackingState = TrackingState.Added;
-			//employee.Territories.Add(territory4);
-
-			// Act
-			context.ApplyChanges(employee);
-
-			// Assert
-			Assert.Equal(EntityState.Deleted, context.Entry(employee).State);
-			//Assert.Equal(EntityState.Unchanged, context.Entry(territory1).State);
-			//Assert.Equal(EntityState.Unchanged, context.Entry(territory2).State);
-			//Assert.Equal(EntityState.Unchanged, context.Entry(territory3).State);
-			Assert.Equal(EntityState.Unchanged, context.Entry(territory4).State);
-			//Assert.True(context.RelatedItemHasBeenRemoved(employee, territory1));
-			//Assert.True(context.RelatedItemHasBeenRemoved(employee, territory2));
-			//Assert.True(context.RelatedItemHasBeenRemoved(employee, territory3));
-			//Assert.True(context.RelatedItemHasBeenRemoved(employee, territory4));
-			//Assert.Equal(0, employee.Territories.Count);
-		}
-
-		[Fact(Skip = "Many-to-Many")]
-		public void Apply_Changes_Should_Mark_Deleted_Employee_As_Deleted_And_Deleted_Territories_As_Unchanged()
-		{
-			// NOTE: If a deleted child is assocated with a deleted parent, 
-			// it should be set to unchanged and removed from the M-M relation.
-
-			// Arrange
-			var context = _fixture.GetContext();
-			var nw = new MockNorthwind();
-			var employee = nw.Employees[0];
-			employee.TrackingState = TrackingState.Deleted;
-			//var territory1 = employee.Territories[0];
-			//var territory2 = employee.Territories[1];
-			//var territory3 = employee.Territories[2];
-			//territory3.TrackingState = TrackingState.Deleted;
-
-			// Act
-			context.ApplyChanges(employee);
-
-			// Assert
-			Assert.Equal(EntityState.Deleted, context.Entry(employee).State);
-			//Assert.Equal(EntityState.Unchanged, context.Entry(territory1).State);
-			//Assert.Equal(EntityState.Unchanged, context.Entry(territory2).State);
-			//Assert.Equal(EntityState.Unchanged, context.Entry(territory3).State);
-			//Assert.True(context.RelatedItemHasBeenRemoved(employee, territory1));
-			//Assert.True(context.RelatedItemHasBeenRemoved(employee, territory2));
-			//Assert.True(context.RelatedItemHasBeenRemoved(employee, territory3));
-			//Assert.Equal(0, employee.Territories.Count);
-		}
-
-		#endregion
-
-		#region Customer-CustomerSetting: One to One
+            Assert.Equal(EntityState.Unchanged, context.Entry(territory1).State);
+            Assert.Equal(EntityState.Unchanged, context.Entry(territory2).State);
+            Assert.Equal(EntityState.Unchanged, context.Entry(territory3).State);
+        }
 
 		[Fact]
+		public void Apply_Changes_Should_Mark_Added_Employee_As_Added_And_Territories_As_Added_Modified()
+		{
+			// Arrange
+			var context = _fixture.GetContext();
+			var nw = new MockNorthwind();
+			var employee = nw.Employees[0];
+			employee.TrackingState = TrackingState.Added;
+		    var territory1 = employee.EmployeeTerritories[0].Territory;
+		    var territory2 = employee.EmployeeTerritories[1].Territory;
+		    territory1.TrackingState = TrackingState.Added;
+		    territory2.TrackingState = TrackingState.Modified;
+
+            // Act
+            context.ApplyChanges(employee);
+
+            // Assert
+		    Assert.Equal(EntityState.Added, context.Entry(employee).State);
+		    Assert.Equal(EntityState.Added, context.Entry(territory1).State);
+		    Assert.Equal(EntityState.Modified, context.Entry(territory2).State);
+		}
+
+		[Fact]
+		public void Apply_Changes_Should_Mark_Added_Employee_As_Added_And_Deleted_Territories_As_Unchanged()
+		{
+		    // NOTE: Deleting a related M-M entity will simply mark it as unchanged,
+		    // because it may have other related entities.
+			
+            // Arrange
+            var context = _fixture.GetContext();
+			var nw = new MockNorthwind();
+			var employee = nw.Employees[0];
+			employee.TrackingState = TrackingState.Added;
+		    var territory1 = employee.EmployeeTerritories[0].Territory;
+            territory1.TrackingState = TrackingState.Deleted;
+
+            // Act
+            context.ApplyChanges(employee);
+
+			// Assert
+			Assert.Equal(EntityState.Added, context.Entry(employee).State);
+		    Assert.Equal(EntityState.Unchanged, context.Entry(territory1).State);
+		}
+
+	    [Fact]
+	    public void Apply_Changes_Should_Mark_Added_Employee_As_Added_And_Unchanged_EmployeeTerritories_As_Added()
+	    {
+	        // NOTE: If parent is Added, M-M relation entity will be marked as Added,
+	        // even if it is marked as Unchanged.
+	
+            // Arrange
+            var context = _fixture.GetContext();
+	        var nw = new MockNorthwind();
+	        var employee = nw.Employees[0];
+	        var empTerritory = employee.EmployeeTerritories[0];
+	        employee.TrackingState = TrackingState.Added;
+
+	        // Act
+	        context.ApplyChanges(employee);
+
+	        // Assert
+	        Assert.Equal(EntityState.Added, context.Entry(employee).State);
+	        Assert.Equal(EntityState.Added, context.Entry(empTerritory).State);
+	    }
+
+	    [Fact]
+	    public void Apply_Changes_Should_Mark_Added_Employee_As_Added_And_Deleted_EmployeeTerritories_As_Deleted()
+	    {
+            // NOTE: If parent is Added, M-M relation entity will be marked as Added,
+            // even if it is marked as Deleted.
+
+	        // Arrange
+	        var context = _fixture.GetContext();
+	        var nw = new MockNorthwind();
+	        var employee = nw.Employees[0];
+	        var empTerritory = employee.EmployeeTerritories[0];
+	        employee.TrackingState = TrackingState.Added;
+	        empTerritory.TrackingState = TrackingState.Deleted;
+
+	        // Act
+	        context.ApplyChanges(employee);
+
+	        // Assert
+	        Assert.Equal(EntityState.Added, context.Entry(employee).State);
+	        Assert.Equal(EntityState.Added, context.Entry(empTerritory).State);
+	    }
+
+        [Fact]
+        public void Apply_Changes_Should_Mark_Deleted_Employee_As_Deleted_And_Unchanged_Territories_As_Unchanged()
+        {
+            // Arrange
+            var context = _fixture.GetContext();
+            var nw = new MockNorthwind();
+            var employee = nw.Employees[0];
+            employee.TrackingState = TrackingState.Deleted;
+            var territory1 = employee.EmployeeTerritories[0].Territory;
+            var territory2 = employee.EmployeeTerritories[1].Territory;
+            var territory3 = employee.EmployeeTerritories[2].Territory;
+
+            // Act
+            context.ApplyChanges(employee);
+
+            // Assert
+            Assert.Equal(EntityState.Deleted, context.Entry(employee).State);
+            Assert.Equal(EntityState.Unchanged, context.Entry(territory1).State);
+            Assert.Equal(EntityState.Unchanged, context.Entry(territory2).State);
+            Assert.Equal(EntityState.Unchanged, context.Entry(territory3).State);
+        }
+
+        [Fact]
+        public void Apply_Changes_Should_Mark_Deleted_Employee_As_Added_And_Territories_As_Added_Modified()
+        {
+            // Arrange
+            var context = _fixture.GetContext();
+            var nw = new MockNorthwind();
+            var employee = nw.Employees[0];
+            employee.TrackingState = TrackingState.Deleted;
+            var territory1 = employee.EmployeeTerritories[0].Territory;
+            var territory2 = employee.EmployeeTerritories[1].Territory;
+            territory1.TrackingState = TrackingState.Added;
+            territory2.TrackingState = TrackingState.Modified;
+
+            // Act
+            context.ApplyChanges(employee);
+
+            // Assert
+            Assert.Equal(EntityState.Deleted, context.Entry(employee).State);
+            Assert.Equal(EntityState.Added, context.Entry(territory1).State);
+            Assert.Equal(EntityState.Modified, context.Entry(territory2).State);
+        }
+
+        [Fact]
+        public void Apply_Changes_Should_Mark_Deleted_Employee_As_Added_And_Deleted_Territories_As_Unchanged()
+        {
+            // NOTE: Deleting a related M-M entity will simply mark it as unchanged,
+            // because it may have other related entities.
+
+            // Arrange
+            var context = _fixture.GetContext();
+            var nw = new MockNorthwind();
+            var employee = nw.Employees[0];
+            employee.TrackingState = TrackingState.Deleted;
+            var territory1 = employee.EmployeeTerritories[0].Territory;
+            territory1.TrackingState = TrackingState.Deleted;
+
+            // Act
+            context.ApplyChanges(employee);
+
+            // Assert
+            Assert.Equal(EntityState.Deleted, context.Entry(employee).State);
+            Assert.Equal(EntityState.Unchanged, context.Entry(territory1).State);
+        }
+
+        [Fact]
+	    public void Apply_Changes_Should_Mark_Deleted_Employee_As_Deleted_And_Unchanged_EmployeeTerritories_As_Deleted()
+	    {
+	        // NOTE: If parent is Deleted, M-M relation entity will be marked as Deleted,
+	        // even if it is marked as Unchanged.
+
+	        // Arrange
+	        var context = _fixture.GetContext();
+	        var nw = new MockNorthwind();
+	        var employee = nw.Employees[0];
+	        var empTerritory = employee.EmployeeTerritories[0];
+	        employee.TrackingState = TrackingState.Deleted;
+
+	        // Act
+	        context.ApplyChanges(employee);
+
+	        // Assert
+	        Assert.Equal(EntityState.Deleted, context.Entry(employee).State);
+	        Assert.Equal(EntityState.Deleted, context.Entry(empTerritory).State);
+	    }
+
+	    [Fact]
+	    public void Apply_Changes_Should_Mark_Deleted_Employee_As_Deleted_And_Added_EmployeeTerritories_As_Deleted()
+	    {
+	        // NOTE: If parent is Deleted, M-M relation entity will be marked as Deleted,
+	        // even if it is marked as Added.
+
+	        // Arrange
+	        var context = _fixture.GetContext();
+	        var nw = new MockNorthwind();
+	        var employee = nw.Employees[0];
+	        var empTerritory = employee.EmployeeTerritories[0];
+	        employee.TrackingState = TrackingState.Deleted;
+	        empTerritory.TrackingState = TrackingState.Added;
+
+            // Act
+            context.ApplyChanges(employee);
+
+	        // Assert
+	        Assert.Equal(EntityState.Deleted, context.Entry(employee).State);
+	        Assert.Equal(EntityState.Deleted, context.Entry(empTerritory).State);
+	    }
+
+        #endregion
+
+        #region Customer-CustomerSetting: One to One
+
+        [Fact]
 		public void Apply_Changes_Should_Mark_Unchanged_Customer_As_Unchanged_And_Unchanged_Setting_As_Unchanged()
 		{
 			// Arrange

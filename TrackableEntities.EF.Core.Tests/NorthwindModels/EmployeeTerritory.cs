@@ -9,9 +9,7 @@ namespace TrackableEntities.EF.Core.Tests.NorthwindModels
         public int EmployeeId { get; set; }
         public string TerritoryId { get; set; }
 
-        [ForeignKey("EmployeeId")]
         public Employee Employee { get; set; }
-        [ForeignKey("TerritoryId")]
         public Territory Territory { get; set; }
 
         [NotMapped]

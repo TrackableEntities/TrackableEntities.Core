@@ -20,7 +20,6 @@ namespace TrackableEntities.EF.Core.Tests.Contexts
         public DbSet<OrderDetail> OrderDetails { get; set; }
         public DbSet<Employee> Employees { get; set; }
         public DbSet<Territory> Territories { get; set; }
-        public DbSet<EmployeeTerritory> EmployeeTerritories { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -29,13 +28,13 @@ namespace TrackableEntities.EF.Core.Tests.Contexts
                 .WithOne(c => c.Customer);
             modelBuilder.Entity<Promo>().ToTable("Promos");
             modelBuilder.Entity<HolidayPromo>().ToTable("HolidayPromos");
-            modelBuilder.Entity<EmployeeTerritory>()
-                .HasKey(et => new { et.EmployeeId, et.TerritoryId });
             modelBuilder.Entity<ProductInfo>()
                 .HasKey(pi => new { pi.ProductInfoKey1, pi.ProductInfoKey2 });
             modelBuilder.Entity<Product>()
                 .HasOne(p => p.ProductInfo)
                 .WithOne(p => p.Product);
+            modelBuilder.Entity<EmployeeTerritory>()
+                .HasKey(et => new { et.EmployeeId, et.TerritoryId });
         }
     }
 }

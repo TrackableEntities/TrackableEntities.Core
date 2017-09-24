@@ -22,11 +22,12 @@ namespace TrackableEntities.EF.Core.Tests.Helpers
                 .Options;
         }
 
-        public NorthwindDbContext GetContext()
+        public NorthwindDbContext GetContext(bool seedData = false)
         {
             var context = new NorthwindDbContext(_options);
             context.Database.EnsureCreated();
-            //context.EnsureSeedData(); // No need to populate tables
+            if (seedData)
+                context.EnsureSeedData();
             return context;
         }
 

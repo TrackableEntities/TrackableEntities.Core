@@ -31,10 +31,14 @@ namespace TrackableEntities.EF.Core
                     switch (relationship)
                     {
                         case RelationshipType.OneToOne:
-                            // If parent is added, set to added
+                            // If parent is added set to added
                             if (node.SourceEntry.State == EntityState.Added)
                             {
                                 SetEntityState(node.Entry, TrackingState.Added.ToEntityState(), trackable);
+                            }
+                            else if (node.SourceEntry.State == EntityState.Deleted)
+                            {
+                                SetEntityState(node.Entry, TrackingState.Deleted.ToEntityState(), trackable);
                             }
                             else
                             {
@@ -42,14 +46,16 @@ namespace TrackableEntities.EF.Core
                             }
                             return;
                         case RelationshipType.ManyToOne:
-                            // If parent is added, set to added
+                            // If parent is added set to added
                             if (node.SourceEntry.State == EntityState.Added)
                             {
                                 SetEntityState(node.Entry, TrackingState.Added.ToEntityState(), trackable);
                                 return;
                             }
-                            // If parent is deleted, set to deleted
-                            if (node.SourceEntry.State == EntityState.Deleted)
+                            // If parent is deleted set to deleted
+                            var parent = node.SourceEntry.Entity as ITrackable;
+                            if (node.SourceEntry.State == EntityState.Deleted
+                                || parent?.TrackingState == TrackingState.Deleted)
                             {
                                 try
                                 {
@@ -60,6 +66,15 @@ namespace TrackableEntities.EF.Core
                                 {
                                     throw new InvalidOperationException(Constants.ExceptionMessages.DeletedWithAddedChildren, e);
                                 }
+                                return;
+                            }
+                            break;
+                        case RelationshipType.OneToMany:
+                            // If trackable is set deleted set entity state to unchanged,
+                            // since it may be related to other entities.
+                            if (trackable.TrackingState == TrackingState.Deleted)
+                            {
+                                SetEntityState(node.Entry, TrackingState.Unchanged.ToEntityState(), trackable);
                                 return;
                             }
                             break;

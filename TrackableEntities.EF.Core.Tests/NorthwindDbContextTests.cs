@@ -1614,14 +1614,11 @@ namespace TrackableEntities.EF.Core.Tests
 			// Assert
 			Assert.Equal(EntityState.Added, context.Entry(customer).State);
 			Assert.Equal(EntityState.Added, context.Entry(setting).State);
-			Assert.NotNull(customer.CustomerSetting);
 		}
 
         [Fact]
 		public void Apply_Changes_Should_Mark_Deleted_Customer_As_Deleted_And_Unchanged_Setting_As_Deleted()
 		{
-			// NOTE: CustomerSetting will be set to null because customer is deleted.
-
 			// Arrange
 			var context = _fixture.GetContext();
 			var nw = new MockNorthwind();
@@ -1636,14 +1633,11 @@ namespace TrackableEntities.EF.Core.Tests
 			// Assert
 			Assert.Equal(EntityState.Deleted, context.Entry(customer).State);
 			Assert.Equal(EntityState.Deleted, context.Entry(setting).State);
-			Assert.Null(customer.CustomerSetting);
 		}
 
         [Fact]
 		public void Apply_Changes_Should_Mark_Deleted_Customer_As_Deleted_And_Added_Setting_As_Deleted()
 		{
-			// NOTE: CustomerSetting will be set to null because customer is deleted.
-
 			// Arrange
 			var context = _fixture.GetContext();
 			var nw = new MockNorthwind();
@@ -1658,14 +1652,11 @@ namespace TrackableEntities.EF.Core.Tests
 			// Assert
 			Assert.Equal(EntityState.Deleted, context.Entry(customer).State);
 			Assert.Equal(EntityState.Deleted, context.Entry(setting).State);
-			Assert.Null(customer.CustomerSetting);
 		}
 
         [Fact]
 		public void Apply_Changes_Should_Mark_Deleted_Customer_As_Deleted_And_Deleted_Setting_As_Deleted()
 		{
-			// NOTE: CustomerSetting will be set to null because customer is deleted.
-
 			// Arrange
 			var context = _fixture.GetContext();
 			var nw = new MockNorthwind();
@@ -1680,7 +1671,6 @@ namespace TrackableEntities.EF.Core.Tests
 			// Assert
 			Assert.Equal(EntityState.Deleted, context.Entry(customer).State);
 			Assert.Equal(EntityState.Deleted, context.Entry(setting).State);
-			Assert.Null(customer.CustomerSetting);
 		}
 
 		#endregion
@@ -1915,8 +1905,6 @@ namespace TrackableEntities.EF.Core.Tests
 			// Assert
 			Assert.Equal(EntityState.Deleted, context.Entry(order).State);
 			Assert.Equal(EntityState.Unchanged, context.Entry(customer).State);
-			Assert.Null(order.Customer);
-			Assert.Null(order.CustomerId);
 		}
 
         #endregion        

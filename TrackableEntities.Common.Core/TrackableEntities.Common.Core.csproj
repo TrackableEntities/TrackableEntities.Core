@@ -5,7 +5,7 @@
     <PackageId>TrackableEntities.Common.Core</PackageId>
     <PackageVersion>1.0.0-alpha</PackageVersion>
     <Authors>Tony Sneed</Authors>
-    <Description>Assembly containing ITrackable interface and TrackingState enum.</Description>
+    <Description>Assembly containing TrackingState enum and ITrackable, IMergeable interfaces.</Description>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
     <PackageReleaseNotes>See: https://github.com/TrackableEntities/TrackableEntities.Core/releases/tag/v1.0.0-alpha1</PackageReleaseNotes>
     <PackageTags>change-tracking entity-framework-core n-tier</PackageTags>

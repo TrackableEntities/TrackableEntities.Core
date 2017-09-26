@@ -5,6 +5,7 @@ using TrackableEntities.Common.Core;
 using TrackableEntities.EF.Core.Tests.FamilyModels;
 using TrackableEntities.EF.Core.Tests.Helpers;
 using TrackableEntities.EF.Core.Tests.Mocks;
+using TrackableEntities.EF.Core.Tests.NorthwindModels;
 using Xunit;
 
 namespace TrackableEntities.EF.Core.Tests
@@ -16,8 +17,11 @@ namespace TrackableEntities.EF.Core.Tests
 
         public FamilyDbContextTests(FamilyDbContextFixture fixture)
         {
+            fixture.Initialize();
             _fixture = fixture;
         }
+
+        #region ApplyChanges Tests
 
         [Fact]
         public void Apply_Changes_Should_Mark_Added_Parent()
@@ -214,5 +218,61 @@ namespace TrackableEntities.EF.Core.Tests
             Assert.Equal(EntityState.Deleted, context.Entry(child).State);
             Assert.Equal(EntityState.Deleted, context.Entry(grandchild).State);
         }
+
+        #endregion
+
+        #region OneToMany AcceptChanges Tests
+
+        [Fact]
+        public void Accept_Changes_Should_Mark_Family_Unchanged()
+        {
+            // Arrange
+            var parent = new MockFamily().Parent;
+            parent.TrackingState = TrackingState.Modified;
+            parent.Children[0].TrackingState = TrackingState.Modified;
+            parent.Children[0].Children[0].TrackingState = TrackingState.Modified;
+            parent.Children[0].Children[0].Children[0].TrackingState = TrackingState.Added;
+            parent.Children[0].Children[0].Children[1].TrackingState = TrackingState.Modified;
+            parent.Children[0].Children[0].Children[2].TrackingState = TrackingState.Deleted;
+            parent.Children[1].TrackingState = TrackingState.Added;
+            parent.Children[1].Children[0].TrackingState = TrackingState.Added;
+            parent.Children[1].Children[0].Children[0].TrackingState = TrackingState.Added;
+            parent.Children[1].Children[0].Children[1].TrackingState = TrackingState.Added;
+            parent.Children[1].Children[0].Children[2].TrackingState = TrackingState.Added;
+            parent.Children[2].TrackingState = TrackingState.Deleted;
+            parent.Children[2].Children[1].TrackingState = TrackingState.Deleted;
+            parent.Children[2].Children[1].Children[0].TrackingState = TrackingState.Deleted;
+            parent.Children[2].Children[1].Children[1].TrackingState = TrackingState.Deleted;
+            parent.Children[2].Children[1].Children[2].TrackingState = TrackingState.Deleted;
+
+            // Act
+            var context = _fixture.GetContext();
+            context.AcceptChanges(parent);
+
+            // Assert
+            var states = context.GetTrackingStates(parent, TrackingState.Unchanged).ToList();
+            Assert.Equal(40, states.Count);
+        }
+
+        [Fact]
+        public void Accept_Changes_Should_Remove_ModifiedProperties_From_Family()
+        {
+            // Arrange
+            var parent = new MockFamily().Parent;
+            parent.ModifiedProperties = new List<string> { "Name" };
+            parent.Children[0].ModifiedProperties = new List<string> { "Name" };
+            parent.Children[0].Children[0].ModifiedProperties = new List<string> { "Name" };
+            parent.Children[0].Children[0].Children[1].ModifiedProperties = new List<string> { "Name" };
+
+            // Act
+            var context = _fixture.GetContext();
+            context.AcceptChanges(parent);
+
+            // Assert
+            IEnumerable<ICollection<string>> modifiedProps = context.GetModifiedProperties(parent);
+            Assert.False(modifiedProps.Any(p => p?.Count > 0));
+        }
+
+        #endregion
     }
 }

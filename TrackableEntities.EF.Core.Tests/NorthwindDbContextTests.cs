@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using TrackableEntities.Common.Core;
 using TrackableEntities.EF.Core.Tests.Helpers;
@@ -17,6 +18,7 @@ namespace TrackableEntities.EF.Core.Tests
             public NorthwindDbContextTests(NorthwindDbContextFixture fixture)
             {
                 _fixture = fixture;
+                _fixture.Initialize();
             }
 
         #region Product: Single Entity
@@ -1841,6 +1843,120 @@ namespace TrackableEntities.EF.Core.Tests
 			Assert.Equal(EntityState.Unchanged, context.Entry(customer).State);
 		}
 
-        #endregion        
+        #endregion
+
+        #region OneToMany AcceptChanges Tests
+        
+        [Fact]
+        public void Accept_Changes_Should_Mark_Multiple_Orders_As_Unchanged()
+        {
+            // Arrange
+            var northwind = new MockNorthwind();
+            var order1 = northwind.Orders[0];
+            order1.TrackingState = TrackingState.Modified;
+            order1.Customer.TrackingState = TrackingState.Modified;
+            order1.OrderDetails[1].TrackingState = TrackingState.Modified;
+            order1.OrderDetails[2].TrackingState = TrackingState.Added;
+            order1.OrderDetails[3].TrackingState = TrackingState.Deleted;
+
+            var order2 = northwind.Orders[2];
+            order2.Customer.TrackingState = TrackingState.Modified;
+            order2.OrderDetails[0].TrackingState = TrackingState.Modified;
+            order2.OrderDetails[1].TrackingState = TrackingState.Added;
+            order2.OrderDetails[2].TrackingState = TrackingState.Deleted;
+
+            // Act
+            var orders = new List<Order> { order1, order2 };
+            var context = _fixture.GetContext();
+            context.AcceptChanges(orders);
+
+            // Assert
+            Assert.Equal(TrackingState.Unchanged, order1.TrackingState);
+            Assert.Equal(TrackingState.Unchanged, order1.Customer.TrackingState);
+            Assert.False(order1.OrderDetails.Any(d => d.TrackingState != TrackingState.Unchanged));
+            Assert.Equal(TrackingState.Unchanged, order2.TrackingState);
+            Assert.Equal(TrackingState.Unchanged, order2.Customer.TrackingState);
+            Assert.False(order2.OrderDetails.Any(d => d.TrackingState != TrackingState.Unchanged));
+        }
+
+        #endregion
+
+        #region ManyToOne AcceptChanges Tests
+
+        [Fact]
+        public void Accept_Changes_Should_Mark_Order_With_Modified_Customer_Unchanged()
+        {
+            // Arrange
+            var northwind = new MockNorthwind();
+            var order = northwind.Orders[0];
+            order.TrackingState = TrackingState.Modified;
+            order.Customer.TrackingState = TrackingState.Modified;
+
+            // Act
+            var context = _fixture.GetContext();
+            context.AcceptChanges(order);
+
+            // Assert
+            Assert.Equal(TrackingState.Unchanged, order.TrackingState);
+            Assert.Equal(TrackingState.Unchanged, order.Customer.TrackingState);
+        }
+
+        [Fact]
+        public void Accept_Changes_Should_Mark_Order_With_Added_Customer_Unchanged()
+        {
+            // Arrange
+            var northwind = new MockNorthwind();
+            var order = northwind.Orders[0];
+            order.TrackingState = TrackingState.Modified;
+            order.Customer.TrackingState = TrackingState.Added;
+
+            // Act
+            var context = _fixture.GetContext();
+            context.AcceptChanges(order);
+
+            // Assert
+            Assert.Equal(TrackingState.Unchanged, order.TrackingState);
+            Assert.Equal(TrackingState.Unchanged, order.Customer.TrackingState);
+        }
+
+        [Fact]
+        public void Accept_Changes_Should_Mark_Order_With_Deleted_Customer_Unchanged()
+        {
+            // Arrange
+            var northwind = new MockNorthwind();
+            var order = northwind.Orders[0];
+            order.TrackingState = TrackingState.Modified;
+            order.Customer.TrackingState = TrackingState.Deleted;
+
+            // Act
+            var context = _fixture.GetContext();
+            context.AcceptChanges(order);
+
+            // Assert
+            Assert.Equal(TrackingState.Unchanged, order.TrackingState);
+            Assert.Equal(TrackingState.Unchanged, order.Customer.TrackingState);
+        }
+
+        [Fact]
+        public void Accept_Changes_Should_Remove_ModifiedProperties_From_Order_With_Customer()
+        {
+            // Arrange
+            var northwind = new MockNorthwind();
+            var order = northwind.Orders[0];
+            order.TrackingState = TrackingState.Modified;
+            order.ModifiedProperties = new List<string> { "OrderDate" };
+            order.Customer.TrackingState = TrackingState.Modified;
+            order.Customer.ModifiedProperties = new List<string> { "CustomerName" };
+
+            // Act
+            var context = _fixture.GetContext();
+            context.AcceptChanges(order);
+
+            // Assert
+            Assert.False(context.GetModifiedProperties(order).Any(p => p?.Count > 0));
+            Assert.False(context.GetModifiedProperties(order.Customer).Any(p => p?.Count > 0));
+        }
+
+        #endregion
     }
 }

@@ -14,6 +14,7 @@ namespace TrackableEntities.EF.Core.Tests
         public NavigationExtensionsTests(NorthwindDbContextFixture fixture)
         {
             _fixture = fixture;
+            _fixture.Initialize();
         }
 
         [Fact]

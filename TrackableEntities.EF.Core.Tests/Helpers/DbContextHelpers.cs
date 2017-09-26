@@ -1,28 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.ChangeTracking;
-using Microsoft.EntityFrameworkCore.ChangeTracking.Internal;
-using Microsoft.EntityFrameworkCore.Infrastructure;
 using TrackableEntities.Common.Core;
+using TrackableEntities.EF.Core.Internal;
 
 namespace TrackableEntities.EF.Core.Tests.Helpers
 {
     public static class DbContextHelpers
     {
-        public static void TraverseGraph(this DbContext context, object rootEntity,
-            Action<EntityEntryGraphNode> callback)
-        {
-            IStateManager stateManager = context.Entry(rootEntity).GetInfrastructure().StateManager;
-            var node = new EntityEntryGraphNode(stateManager.GetOrCreateEntry(rootEntity), null, null);
-            IEntityEntryGraphIterator graphIterator = new EntityEntryGraphIterator();
-            graphIterator.TraverseGraph(node, n =>
-            {
-                callback(n);
-                return true;
-            });
-        }
-
         public static IEnumerable<EntityState> GetEntityStates(this DbContext context,
             ITrackable item, EntityState? entityState = null)
         {
@@ -44,6 +28,35 @@ namespace TrackableEntities.EF.Core.Tests.Helpers
                     trackable.TrackingState = trackingState;
                 }
             });
+        }
+
+        public static IEnumerable<ICollection<string>> GetModifiedProperties(
+            this DbContext context, ITrackable item)
+        {
+            var modifiedProps = new List<ICollection<string>>();
+            context.TraverseGraph(item, n =>
+            {
+                if (n.Entry.Entity is ITrackable trackable)
+                {
+                    modifiedProps.Add(trackable.ModifiedProperties);
+                }
+            });
+            return modifiedProps;
+        }
+
+        public static IEnumerable<TrackingState> GetTrackingStates(
+            this DbContext context, ITrackable item, TrackingState? trackingState = null)
+        {
+            var states = new List<TrackingState>();
+            context.TraverseGraph(item, n =>
+            {
+                if (n.Entry.Entity is ITrackable trackable)
+                {
+                    if (trackingState == null || trackable.TrackingState == trackingState)
+                        states.Add(trackable.TrackingState);
+                }
+            });
+            return states;
         }
     }
 }

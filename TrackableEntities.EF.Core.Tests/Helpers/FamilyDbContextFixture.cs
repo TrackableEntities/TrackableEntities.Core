@@ -8,25 +8,37 @@ namespace TrackableEntities.EF.Core.Tests.Helpers
 {
     public class FamilyDbContextFixture : IDisposable
     {
-        private readonly DbConnection _connection;
-        private readonly DbContextOptions<FamilyDbContext> _options;
+        private FamilyDbContext _context;
+        private DbConnection _connection;
+        private DbContextOptions<FamilyDbContext> _options;
 
-        public FamilyDbContextFixture()
+        public void Initialize(bool useInMemory = true, Action seedData = null)
         {
-            // In-memory database only exists while the connection is open
-            _connection = new SqliteConnection("DataSource=:memory:");
-            _connection.Open();
-
-            _options = new DbContextOptionsBuilder<FamilyDbContext>()
-                .UseSqlite(_connection)
-                .Options;
+            if (useInMemory)
+            {
+                // In-memory database only exists while the connection is open
+                _connection = new SqliteConnection("DataSource=:memory:");
+                _connection.Open();
+                _options = new DbContextOptionsBuilder<FamilyDbContext>()
+                    .UseSqlite(_connection)
+                    .Options;
+            }
+            else
+            {
+                _options = new DbContextOptionsBuilder<FamilyDbContext>()
+                    .UseSqlServer(@"Data Source=(localdb)\MSSQLLocalDB; Initial Catelog=FamilyTest; Integrated Security=True; MultipleActiveResultSets=True")
+                    .Options;
+            }
+            _context = new FamilyDbContext(_options);
+            _context.Database.EnsureCreated();
+            seedData?.Invoke();
         }
 
         public FamilyDbContext GetContext()
         {
-            var context = new FamilyDbContext(_options);
-            context.Database.EnsureCreated();
-            return context;
+            if (_context == null)
+                throw new InvalidOperationException("You must first call Initialize before getting the context.");
+            return _context;
         }
 
         public void Dispose()

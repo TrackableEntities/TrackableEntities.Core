@@ -41,6 +41,9 @@ namespace TrackableEntities.EF.Core.Tests.Helpers
             return _context;
         }
 
+        public IApplyChangesProvider GetApplyChangesProvider() => GetApplyChangesProvider(GetContext());
+        public IApplyChangesProvider GetApplyChangesProvider(DbContext dbContext) => new ApplyChangesProvider(dbContext);
+
         public void Dispose()
         {
             _connection.Close();

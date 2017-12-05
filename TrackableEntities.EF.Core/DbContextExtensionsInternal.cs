@@ -1,4 +1,5 @@
-﻿using System;
+﻿using System.Runtime.CompilerServices;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
@@ -15,6 +16,28 @@ namespace TrackableEntities.EF.Core.Internal
     /// </summary>
     public static class DbContextExtensionsInternal
     {
+        internal static void EnsureProvider<TProvider>(this DbContext context, ref TProvider provider)
+        {                                                                    
+            if(provider == null)                
+                provider = context.ResolveDefaultProvider<TProvider>();
+        }
+        
+        internal static TProvider ResolveDefaultProvider<TProvider>(this DbContext context) =>
+            (TProvider)context.ResolveDefaultProvider(typeof(TProvider));
+
+        internal static object ResolveDefaultProvider(this DbContext context, Type providerType)
+        {   
+            //we might want to use ServiceLocator
+            if(providerType == typeof(IApplyChangesProvider))
+                return new ApplyChangesProvider(context);
+            else if (providerType == typeof(ITraverseGraphProvider))
+                return new TraverseGraphProvider(context);
+            else if (providerType == typeof(ILoadRelatedEntitiesProvider))
+                return new LoadRelatedEntitiesProvider(context);
+            else 
+                throw new NotSupportedException($"No default provider for '{providerType}'.");
+        }                     
+
         /// <summary>
         /// Traverse an object graph executing a callback on each node.
         /// Depends on Entity Framework Core infrastructure, which may change in future releases.
@@ -23,28 +46,11 @@ namespace TrackableEntities.EF.Core.Internal
         /// <param name="item">Object that implements ITrackable</param>
         /// <param name="callback">Callback executed on each node in the object graph</param>
         public static void TraverseGraph(this DbContext context, object item,
-            Action<EntityEntryGraphNode> callback)
-        {
-            IStateManager stateManager = context.Entry(item).GetInfrastructure().StateManager;
-            var node = new EntityEntryGraphNode(stateManager.GetOrCreateEntry(item), null, null);
-            IEntityEntryGraphIterator graphIterator = new EntityEntryGraphIterator();
-            var visited = new HashSet<int>();
-
-            graphIterator.TraverseGraph(node, n =>
-            {
-                // Check visited
-                if (visited.Contains(n.Entry.Entity.GetHashCode()))
-                    return false;
-
-                // Execute callback
-                callback(n);
-
-                // Add visited
-                visited.Add(n.Entry.Entity.GetHashCode());
-
-                // Return true if node state is null
-                return true;
-            });
+            Action<EntityEntryGraphNode> callback, ITraverseGraphProvider traverseGraphProvider = null)
+        {                           
+            if(traverseGraphProvider == null)
+                traverseGraphProvider = context.ResolveDefaultProvider<ITraverseGraphProvider>();
+            traverseGraphProvider.TraverseGraph(item, callback);
         }
 
         /// <summary>
@@ -54,29 +60,12 @@ namespace TrackableEntities.EF.Core.Internal
         /// <param name="context">Used to query and save changes to a database</param>
         /// <param name="item">Object that implements ITrackable</param>
         /// <param name="callback">Async callback executed on each node in the object graph</param>
-        public static async Task TraverseGraphAsync(this DbContext context, object item,
-            Func<EntityEntryGraphNode, Task> callback)
+        public static Task TraverseGraphAsync(this DbContext context, object item,
+            Func<EntityEntryGraphNode, Task> callback, ITraverseGraphProvider traverseGraphProvider = null)
         {
-            IStateManager stateManager = context.Entry(item).GetInfrastructure().StateManager;
-            var node = new EntityEntryGraphNode(stateManager.GetOrCreateEntry(item), null, null);
-            IEntityEntryGraphIterator graphIterator = new EntityEntryGraphIterator();
-            var visited = new HashSet<int>();
-
-            await graphIterator.TraverseGraphAsync(node, async (n, ct) =>
-            {
-                // Check visited
-                if (visited.Contains(n.Entry.Entity.GetHashCode()))
-                    return false;
-
-                // Execute callback
-                await callback(n);
-
-                // Add visited
-                visited.Add(n.Entry.Entity.GetHashCode());
-
-                // Return true if node state is null
-                return true;
-            });
+            if(traverseGraphProvider == null)
+                traverseGraphProvider = context.ResolveDefaultProvider<ITraverseGraphProvider>();
+            return traverseGraphProvider.TraverseGraphAsync(item, callback);
         }
     }
 }

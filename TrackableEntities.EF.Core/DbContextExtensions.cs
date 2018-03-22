@@ -234,6 +234,8 @@ namespace TrackableEntities.EF.Core
             if (entry.State == EntityState.Modified
                 && trackable.ModifiedProperties != null)
             {
+                //Set entity state to Unchanged
+                entry.State = EntityState.Unchanged;
                 foreach (var property in trackable.ModifiedProperties)
                     entry.Property(property).IsModified = true;
             }

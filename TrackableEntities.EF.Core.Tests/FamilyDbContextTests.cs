@@ -270,7 +270,7 @@ namespace TrackableEntities.EF.Core.Tests
 
             // Assert
             IEnumerable<ICollection<string>> modifiedProps = context.GetModifiedProperties(parent);
-            Assert.False(modifiedProps.Any(p => p?.Count > 0));
+            Assert.DoesNotContain(modifiedProps, p => p?.Count > 0);
         }
 
         #endregion

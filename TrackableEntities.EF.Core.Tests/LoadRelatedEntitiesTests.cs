@@ -403,10 +403,10 @@ namespace TrackableEntities.EF.Core.Tests
 
             // Assert
             var details = order.OrderDetails;
-            Assert.False(details.Any(d => d.Product == null));
-            Assert.False(details.Any(d => d.Product.ProductId != d.ProductId));
-            Assert.False(details.Any(d => d.Product.Category == null));
-            Assert.False(details.Any(d => d.Product.Category.CategoryId != d.Product.CategoryId));
+            Assert.DoesNotContain(details, d => d.Product == null);
+            Assert.DoesNotContain(details, d => d.Product.ProductId != d.ProductId);
+            Assert.DoesNotContain(details, d => d.Product.Category == null);
+            Assert.DoesNotContain(details, d => d.Product.Category.CategoryId != d.Product.CategoryId);
         }
 
         [Fact]
@@ -421,10 +421,10 @@ namespace TrackableEntities.EF.Core.Tests
 
             // Assert
             var details = order.OrderDetails;
-            Assert.False(details.Any(d => d.Product == null));
-            Assert.False(details.Any(d => d.Product.ProductId != d.ProductId));
-            Assert.False(details.Any(d => d.Product.Category == null));
-            Assert.False(details.Any(d => d.Product.Category.CategoryId != d.Product.CategoryId));
+            Assert.DoesNotContain(details, d => d.Product == null);
+            Assert.DoesNotContain(details, d => d.Product.ProductId != d.ProductId);
+            Assert.DoesNotContain(details, d => d.Product.Category == null);
+            Assert.DoesNotContain(details, d => d.Product.Category.CategoryId != d.Product.CategoryId);
         }
 
         #endregion

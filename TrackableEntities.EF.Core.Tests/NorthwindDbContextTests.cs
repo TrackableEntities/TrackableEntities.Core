@@ -833,7 +833,7 @@ namespace TrackableEntities.EF.Core.Tests
             order.Customer.TrackingState = TrackingState.Deleted;
 
             // Act / Assert
-            Exception ex = Assert.Throws(typeof(InvalidOperationException), () => context.ApplyChanges(order));
+            Exception ex = Assert.Throws<InvalidOperationException>(() => context.ApplyChanges(order));
 
             // Assert
             Assert.Equal(Constants.ExceptionMessages.DeletedWithAddedChildren, ex.Message);
@@ -1873,10 +1873,10 @@ namespace TrackableEntities.EF.Core.Tests
             // Assert
             Assert.Equal(TrackingState.Unchanged, order1.TrackingState);
             Assert.Equal(TrackingState.Unchanged, order1.Customer.TrackingState);
-            Assert.False(order1.OrderDetails.Any(d => d.TrackingState != TrackingState.Unchanged));
+            Assert.DoesNotContain(order1.OrderDetails, d => d.TrackingState != TrackingState.Unchanged);
             Assert.Equal(TrackingState.Unchanged, order2.TrackingState);
             Assert.Equal(TrackingState.Unchanged, order2.Customer.TrackingState);
-            Assert.False(order2.OrderDetails.Any(d => d.TrackingState != TrackingState.Unchanged));
+            Assert.DoesNotContain(order2.OrderDetails, d => d.TrackingState != TrackingState.Unchanged);
         }
 
         #endregion
@@ -1953,8 +1953,8 @@ namespace TrackableEntities.EF.Core.Tests
             context.AcceptChanges(order);
 
             // Assert
-            Assert.False(context.GetModifiedProperties(order).Any(p => p?.Count > 0));
-            Assert.False(context.GetModifiedProperties(order.Customer).Any(p => p?.Count > 0));
+            Assert.DoesNotContain(context.GetModifiedProperties(order), p => p?.Count > 0);
+            Assert.DoesNotContain(context.GetModifiedProperties(order.Customer), p => p?.Count > 0);
         }
 
         #endregion

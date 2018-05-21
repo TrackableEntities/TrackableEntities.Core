@@ -13,7 +13,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TrackableEntities.Common.Co
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TrackableEntities.EF.Core.Tests", "TrackableEntities.EF.Core.Tests\TrackableEntities.EF.Core.Tests.csproj", "{A4C0863A-C3EA-4363-AB1D-A6B3D8E06646}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TrackableEntities.EF.Core", "TrackableEntities.EF.Core\TrackableEntities.EF.Core.csproj", "{280BFFA8-E081-4645-8FA7-6B6431F21CEC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TrackableEntities.EF.Core", "TrackableEntities.EF.Core\TrackableEntities.EF.Core.csproj", "{280BFFA8-E081-4645-8FA7-6B6431F21CEC}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

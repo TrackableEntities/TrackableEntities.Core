@@ -11,13 +11,11 @@ namespace TrackableEntities.EF.Core.Internal
 {
     /// <summary>
     /// Internal extension methods for trackable entities.
-    /// Depends on Entity Framework Core infrastructure, which may change in future releases.
     /// </summary>
     public static class DbContextExtensionsInternal
     {
         /// <summary>
         /// Traverse an object graph executing a callback on each node.
-        /// Depends on Entity Framework Core infrastructure, which may change in future releases.
         /// </summary>
         /// <param name="context">Used to query and save changes to a database</param>
         /// <param name="item">Object that implements ITrackable</param>
@@ -30,7 +28,7 @@ namespace TrackableEntities.EF.Core.Internal
             IEntityEntryGraphIterator graphIterator = new EntityEntryGraphIterator();
             var visited = new HashSet<int>();
 
-            graphIterator.TraverseGraph(node, n =>
+            graphIterator.TraverseGraph<object>(node, null, (n, s) =>
             {
                 // Check visited
                 if (visited.Contains(n.Entry.Entity.GetHashCode()))
@@ -42,14 +40,13 @@ namespace TrackableEntities.EF.Core.Internal
                 // Add visited
                 visited.Add(n.Entry.Entity.GetHashCode());
 
-                // Return true if node state is null
+                // Continue traversal
                 return true;
             });
         }
 
         /// <summary>
         /// Traverse an object graph asynchronously executing a callback on each node.
-        /// Depends on Entity Framework Core infrastructure, which may change in future releases.
         /// </summary>
         /// <param name="context">Used to query and save changes to a database</param>
         /// <param name="item">Object that implements ITrackable</param>
@@ -62,7 +59,7 @@ namespace TrackableEntities.EF.Core.Internal
             IEntityEntryGraphIterator graphIterator = new EntityEntryGraphIterator();
             var visited = new HashSet<int>();
 
-            await graphIterator.TraverseGraphAsync(node, async (n, ct) =>
+            await graphIterator.TraverseGraphAsync<object>(node, null, async (n, s, ct) =>
             {
                 // Check visited
                 if (visited.Contains(n.Entry.Entity.GetHashCode()))
@@ -74,7 +71,7 @@ namespace TrackableEntities.EF.Core.Internal
                 // Add visited
                 visited.Add(n.Entry.Entity.GetHashCode());
 
-                // Return true if node state is null
+                // Continue traversal
                 return true;
             });
         }

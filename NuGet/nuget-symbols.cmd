@@ -1,6 +1,6 @@
 rem Pushing Symbols packages to NuGet.org
 
-set version=1.0.0-beta
+set version=1.0.0
 set source=https://nuget.smbsrc.net/
 NuGet.exe SetApiKey 5682793e-2994-4016-b7b4-c11be576703b
 rem NuGet.exe push TrackableEntities.Common.Core\TrackableEntities.Common.Core.%version%.symbols.nupkg -source %source%

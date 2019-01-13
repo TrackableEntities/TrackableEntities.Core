@@ -12,18 +12,14 @@ Trackable Entities for EF Core is available as a NuGet package that can be insta
 
 You can use the [Package Manager UI or Console](https://docs.microsoft.com/en-us/nuget/tools/package-manager-console) in Visual Studio to install the TE package.
 
-> **Note**: Use the `-Pre` argument to install pre-release versions of TE for EF Core.
-
 ```bash
-install-package TrackableEntities.EF.Core -Pre
+install-package TrackableEntities.EF.Core
 ```
 
 You can also use the [.NET Core CLI](https://docs.microsoft.com/en-us/dotnet/core/tools/) to install the TE package.
 
-> **Note**: Append `-*` to the `-v` argument to install pre-release versions of TE for EF Core.
-
 ```bash
-dotnet add package TrackableEntities.EF.Core -v 1.0.0-*
+dotnet add package TrackableEntities.EF.Core
 ```
 
 ## Trackable Entities Interfaces

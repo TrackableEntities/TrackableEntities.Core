@@ -3,16 +3,16 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <PackageVersion>1.1.0</PackageVersion>
+    <PackageVersion>1.2.0</PackageVersion>
     <Authors>Tony Sneed</Authors>
     <Company>Tony Sneed</Company>
     <Title>Trackable Entities for EF Core</Title>
     <Description>Provides an ApplyChanges extension method for DbContext that sets EntityState on trackable entities, so they can be saved by a service in a single transaction.</Description>
-    <PackageLicenseUrl>https://github.com/TrackableEntities/TrackableEntities.Core/blob/master/LICENSE</PackageLicenseUrl>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageProjectUrl>https://github.com/TrackableEntities/TrackableEntities.Core</PackageProjectUrl>
     <PackageIconUrl>http://trackableentities.github.io/images/tracking.png</PackageIconUrl>
     <PackageTags>change-tracking entity-framework-core n-tier</PackageTags>
-    <PackageReleaseNotes>See: https://github.com/TrackableEntities/TrackableEntities.Core/releases/tag/v1.1.0</PackageReleaseNotes>
+    <PackageReleaseNotes>See: https://github.com/TrackableEntities/TrackableEntities.Core/releases/tag/v1.2.0</PackageReleaseNotes>
     <IncludeSource>true</IncludeSource>
   </PropertyGroup>
 
@@ -27,7 +27,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="2.1.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="2.2.1" />
   </ItemGroup>
 
   <ItemGroup>

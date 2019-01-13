@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
@@ -234,8 +235,9 @@ namespace TrackableEntities.EF.Core
             if (entry.State == EntityState.Modified
                 && trackable.ModifiedProperties != null)
             {
-                foreach (var property in trackable.ModifiedProperties)
-                    entry.Property(property).IsModified = true;
+                foreach (var property in entry.Properties)
+                    property.IsModified = trackable.ModifiedProperties.Any(p =>
+                        string.Compare(p, property.Metadata.Name, StringComparison.InvariantCultureIgnoreCase) == 0);
             }
         }
     }

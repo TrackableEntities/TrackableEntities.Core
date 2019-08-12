@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <PackageId>TrackableEntities.Common.Core</PackageId>
-    <PackageVersion>1.2.0</PackageVersion>
+    <PackageVersion>3.0.0-preview7</PackageVersion>
     <Authors>Tony Sneed</Authors>
     <Company>Tony Sneed</Company>
     <Title>Trackable Entities Common for .NET Standard</Title>

@@ -8,6 +8,7 @@ namespace TrackableEntities.EF.Core.Tests.NorthwindModels
     {
         public int ProductInfoKey1 { get; set; }
         public int ProductInfoKey2 { get; set; }
+        public int ProductId { get; set; }
         public Product Product { get; set; }
 
         public string Info { get; set; }

@@ -50,12 +50,11 @@ namespace TrackableEntities.EF.Core.Tests
             EnsureTestTerritory(context, TestTerritoryId3);
 
             // Test Product Infos
-            EnsureTestProductInfo(context, ProductInfo1A, ProductInfo1B);
-            EnsureTestProductInfo(context, ProductInfo2A, ProductInfo2B);
+            //EnsureTestProductInfo(context, ProductInfo1A, ProductInfo1B);
+            //EnsureTestProductInfo(context, ProductInfo2A, ProductInfo2B);
 
             // Save changes
             context.SaveChanges();
-
         }
         private static void EnsureTestTerritory(NorthwindDbContext context, string territoryId)
         {

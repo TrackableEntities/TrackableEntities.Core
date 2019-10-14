@@ -23,12 +23,14 @@ namespace TrackableEntities.EF.Core.Internal
         public static void TraverseGraph(this DbContext context, object item,
             Action<EntityEntryGraphNode> callback)
         {
+#pragma warning disable EF1001 // Internal EF Core API usage.
             IStateManager stateManager = context.Entry(item).GetInfrastructure().StateManager;
-            var node = new EntityEntryGraphNode(stateManager.GetOrCreateEntry(item), null, null);
+            var node = new EntityEntryGraphNode<object>(stateManager.GetOrCreateEntry(item), null, null, null);
             IEntityEntryGraphIterator graphIterator = new EntityEntryGraphIterator();
+#pragma warning restore EF1001 // Internal EF Core API usage.
             var visited = new HashSet<int>();
 
-            graphIterator.TraverseGraph<object>(node, null, (n, s) =>
+            graphIterator.TraverseGraph<object>(node, n =>
             {
                 // Check visited
                 if (visited.Contains(n.Entry.Entity.GetHashCode()))
@@ -54,12 +56,14 @@ namespace TrackableEntities.EF.Core.Internal
         public static async Task TraverseGraphAsync(this DbContext context, object item,
             Func<EntityEntryGraphNode, Task> callback)
         {
+#pragma warning disable EF1001 // Internal EF Core API usage.
             IStateManager stateManager = context.Entry(item).GetInfrastructure().StateManager;
-            var node = new EntityEntryGraphNode(stateManager.GetOrCreateEntry(item), null, null);
+            var node = new EntityEntryGraphNode<object>(stateManager.GetOrCreateEntry(item), null, null, null);
             IEntityEntryGraphIterator graphIterator = new EntityEntryGraphIterator();
+#pragma warning restore EF1001 // Internal EF Core API usage.
             var visited = new HashSet<int>();
 
-            await graphIterator.TraverseGraphAsync<object>(node, null, async (n, s, ct) =>
+            await graphIterator.TraverseGraphAsync<object>(node, async (n, ct) =>
             {
                 // Check visited
                 if (visited.Contains(n.Entry.Entity.GetHashCode()))

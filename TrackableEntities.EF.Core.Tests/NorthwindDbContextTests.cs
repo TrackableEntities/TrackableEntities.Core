@@ -28,14 +28,14 @@ namespace TrackableEntities.EF.Core.Tests
 		{
             // Arrange
             var context = _fixture.GetContext();
-            var parent = new Product();
-			parent.TrackingState = TrackingState.Unchanged;
+            var product = new Product();
+			product.TrackingState = TrackingState.Unchanged;
 
 			// Act
-			context.ApplyChanges(parent);
+			context.ApplyChanges(product);
 
 			// Assert
-			Assert.Equal(EntityState.Unchanged, context.Entry(parent).State);
+			Assert.Equal(EntityState.Unchanged, context.Entry(product).State);
 		}
 
 		[Fact]
@@ -43,14 +43,14 @@ namespace TrackableEntities.EF.Core.Tests
 		{
             // Arrange
             var context = _fixture.GetContext();
-            var parent = new Product();
-			parent.TrackingState = TrackingState.Added;
+            var product = new Product();
+			product.TrackingState = TrackingState.Added;
 
 			// Act
-			context.ApplyChanges(parent);
+			context.ApplyChanges(product);
 
 			// Assert
-			Assert.Equal(EntityState.Added, context.Entry(parent).State);
+			Assert.Equal(EntityState.Added, context.Entry(product).State);
 		}
 
 		[Fact]
@@ -58,29 +58,49 @@ namespace TrackableEntities.EF.Core.Tests
 		{
             // Arrange
             var context = _fixture.GetContext();
-            var parent = new Product();
-			parent.TrackingState = TrackingState.Modified;
+            var product = new Product();
+			product.TrackingState = TrackingState.Modified;
 
 			// Act
-			context.ApplyChanges(parent);
+			context.ApplyChanges(product);
 
 			// Assert
-			Assert.Equal(EntityState.Modified, context.Entry(parent).State);
+			Assert.Equal(EntityState.Modified, context.Entry(product).State);
 		}
 
-		[Fact]
+        [Fact]
+        public void Apply_Changes_Should_Mark_Product_Property_Modified()
+        {
+            // Arrange
+            var context = _fixture.GetContext();
+            var product = new Product();
+            product.TrackingState = TrackingState.Modified;
+            product.ModifiedProperties = new List<string> { nameof(Product.UnitPrice) };
+
+            // Act
+            context.ApplyChanges(product);
+
+            // Assert
+            var priceProp = context.Entry(product).Properties.Single(p => p.Metadata.Name == nameof(Product.UnitPrice));
+            var nameProp = context.Entry(product).Properties.Single(p => p.Metadata.Name == nameof(Product.ProductName));
+            Assert.True(priceProp.IsModified);
+            Assert.False(nameProp.IsModified);
+            Assert.Equal(EntityState.Modified, context.Entry(product).State);
+        }
+
+        [Fact]
 		public void Apply_Changes_Should_Mark_Product_Deleted()
 		{
             // Arrange
             var context = _fixture.GetContext();
-            var parent = new Product();
-			parent.TrackingState = TrackingState.Deleted;
+            var product = new Product();
+			product.TrackingState = TrackingState.Deleted;
 
 			// Act
-			context.ApplyChanges(parent);
+			context.ApplyChanges(product);
 
 			// Assert
-			Assert.Equal(EntityState.Deleted, context.Entry(parent).State);
+			Assert.Equal(EntityState.Deleted, context.Entry(product).State);
 		}
 
 		#endregion

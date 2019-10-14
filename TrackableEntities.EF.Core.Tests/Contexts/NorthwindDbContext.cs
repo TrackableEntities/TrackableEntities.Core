@@ -27,12 +27,12 @@ namespace TrackableEntities.EF.Core.Tests.Contexts
                 .HasOne(c => c.CustomerSetting)
                 .WithOne(c => c.Customer);
             modelBuilder.Entity<Promo>().ToTable("Promos");
-            modelBuilder.Entity<HolidayPromo>().ToTable("HolidayPromos");
             modelBuilder.Entity<ProductInfo>()
                 .HasKey(pi => new { pi.ProductInfoKey1, pi.ProductInfoKey2 });
             modelBuilder.Entity<Product>()
                 .HasOne(p => p.ProductInfo)
-                .WithOne(p => p.Product);
+                .WithOne(p => p.Product)
+                .HasForeignKey<ProductInfo>(pi => pi.ProductId);
             modelBuilder.Entity<EmployeeTerritory>()
                 .HasKey(et => new { et.EmployeeId, et.TerritoryId });
         }

@@ -12,7 +12,7 @@
     <PackageProjectUrl>https://github.com/TrackableEntities/TrackableEntities.Core</PackageProjectUrl>
     <PackageIcon>icon.png</PackageIcon>
     <PackageTags>change-tracking entity-framework-core n-tier</PackageTags>
-    <PackageReleaseNotes>See: https://github.com/TrackableEntities/TrackableEntities.Core/releases/tag/v3.0.0</PackageReleaseNotes>
+    <PackageReleaseNotes>See: https://github.com/TrackableEntities/TrackableEntities.Core/releases/tag/v3.1.0</PackageReleaseNotes>
     <IncludeSource>true</IncludeSource>
   </PropertyGroup>
 

@@ -38,11 +38,11 @@ namespace TrackableEntities.EF.Core
                 if (node.SourceEntry != null)
                 {
 #if NETSTANDARD2_0
-                var relationship = node.InboundNavigation?.GetRelationshipType();
+                    var relationship = node.InboundNavigation?.GetRelationshipType();
 #elif NETSTANDARD2_1
-                var relationship = (node.InboundNavigation as INavigation)?.GetRelationshipType();
+                    var relationship = (node.InboundNavigation as INavigation)?.GetRelationshipType();
 #endif
-                switch (relationship)
+                    switch (relationship)
                     {
                         case RelationshipType.OneToOne:
                             // If parent is added set to added

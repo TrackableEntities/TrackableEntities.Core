@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
+using Microsoft.EntityFrameworkCore.Metadata;
 using TrackableEntities.Common.Core;
 using TrackableEntities.EF.Core.Internal;
 
@@ -36,8 +37,12 @@ namespace TrackableEntities.EF.Core
                 // Get related parent entity
                 if (node.SourceEntry != null)
                 {
-                    var relationship = node.InboundNavigation?.GetRelationshipType();
-                    switch (relationship)
+#if NETSTANDARD2_0
+                var relationship = node.InboundNavigation?.GetRelationshipType();
+#elif NETSTANDARD2_1
+                var relationship = (node.InboundNavigation as INavigation)?.GetRelationshipType();
+#endif
+                switch (relationship)
                     {
                         case RelationshipType.OneToOne:
                             // If parent is added set to added

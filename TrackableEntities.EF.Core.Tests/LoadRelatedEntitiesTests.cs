@@ -196,6 +196,8 @@ namespace TrackableEntities.EF.Core.Tests
             detail4.Product = null;
             order1.OrderDetails = new List<OrderDetail> { detail1, detail2 };
             order2.OrderDetails = new List<OrderDetail> { detail3, detail4 };
+            order1.Customer = null;
+            order2.Customer = null;
 
             // Return orders
             return new List<Order> { order1, order2 };

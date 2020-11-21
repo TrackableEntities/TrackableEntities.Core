@@ -22,12 +22,14 @@ namespace TrackableEntities.EF.Core.Tests.Helpers
                 _connection.Open();
                 _options = new DbContextOptionsBuilder<NorthwindDbContext>()
                     .UseSqlite(_connection)
+                    .EnableSensitiveDataLogging()
                     .Options;
             }
             else
             {
                 _options = new DbContextOptionsBuilder<NorthwindDbContext>()
                     .UseSqlServer(@"Data Source=(localdb)\MSSQLLocalDB; Initial Catalog=NorthwindTest; Integrated Security=True; MultipleActiveResultSets=True")
+                    .EnableSensitiveDataLogging()
                     .Options;
             }
             _context = new NorthwindDbContext(_options);

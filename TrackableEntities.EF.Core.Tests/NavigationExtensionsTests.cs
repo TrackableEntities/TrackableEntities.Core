@@ -23,7 +23,7 @@ namespace TrackableEntities.EF.Core.Tests
             // Arrange
             var context = _fixture.GetContext();
             var order = new MockNorthwind().Orders[0];
-            INavigation nav = context.Entry(order).Navigation(nameof(order.Customer)).Metadata;
+            INavigation nav = (INavigation)context.Entry(order).Navigation(nameof(order.Customer)).Metadata;
 
             // Act
             RelationshipType? relType = nav.GetRelationshipType();
@@ -38,7 +38,7 @@ namespace TrackableEntities.EF.Core.Tests
             // Arrange
             var context = _fixture.GetContext();
             var order = new MockNorthwind().Orders[0];
-            INavigation nav = context.Entry(order).Navigation(nameof(order.OrderDetails)).Metadata;
+            INavigation nav = (INavigation)context.Entry(order).Navigation(nameof(order.OrderDetails)).Metadata;
 
             // Act
             RelationshipType? relType = nav.GetRelationshipType();
@@ -59,7 +59,7 @@ namespace TrackableEntities.EF.Core.Tests
                 Customer = customer,
                 Setting = "Setting 1"
             };
-            INavigation nav = context.Entry(customer).Navigation(nameof(customer.CustomerSetting)).Metadata;
+            INavigation nav = (INavigation)context.Entry(customer).Navigation(nameof(customer.CustomerSetting)).Metadata;
 
             // Act
             RelationshipType? relType = nav.GetRelationshipType();

@@ -179,9 +179,10 @@ namespace TrackableEntities.EF.Core
             {
                 if (n.Entry.State == EntityState.Detached)
                     n.Entry.State = EntityState.Unchanged;
+
                 foreach (var reference in n.Entry.References)
                 {
-                    if (!reference.IsLoaded)
+                    if (!reference.IsLoaded && reference.CurrentValue == null)
                         await reference.LoadAsync();
                 }
             });

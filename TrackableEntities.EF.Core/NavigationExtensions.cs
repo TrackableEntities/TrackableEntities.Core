@@ -17,7 +17,7 @@ namespace TrackableEntities.EF.Core
         {
             if (nav == null) return null;
             if (nav.ForeignKey.IsUnique)
-              return RelationshipType.OneToOne;
+                return RelationshipType.OneToOne;
 #if NETSTANDARD2_1
             return nav.IsOnDependent ? RelationshipType.OneToMany : RelationshipType.ManyToOne;
 #elif NETSTANDARD2_0

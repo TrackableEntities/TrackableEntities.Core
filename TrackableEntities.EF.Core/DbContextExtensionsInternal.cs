@@ -28,19 +28,19 @@ namespace TrackableEntities.EF.Core.Internal
             var node = new EntityEntryGraphNode<object>(stateManager.GetOrCreateEntry(item), null, null, null);
             IEntityEntryGraphIterator graphIterator = new EntityEntryGraphIterator();
 #pragma warning restore EF1001 // Internal EF Core API usage.
-            var visited = new HashSet<int>();
+            var visited = new HashSet<object>();
 
-            graphIterator.TraverseGraph<object>(node, n =>
+            graphIterator.TraverseGraph(node, n =>
             {
                 // Check visited
-                if (visited.Contains(n.Entry.Entity.GetHashCode()))
+                if (visited.Contains(n.Entry.Entity))
                     return false;
 
                 // Execute callback
                 callback(n);
 
                 // Add visited
-                visited.Add(n.Entry.Entity.GetHashCode());
+                visited.Add(n.Entry.Entity);
 
                 // Continue traversal
                 return true;

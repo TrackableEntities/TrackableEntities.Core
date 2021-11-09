@@ -6,6 +6,6 @@ namespace TrackableEntities.EF.Core.Tests.NorthwindModels
     {
         [Key]
         public int PromoId { get; set; }
-        public string PromoCode { get; set; }
+        public string PromoCode { get; set; } = string.Empty;
     }
 }

@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections;
 using TrackableEntities.Common.Core;
 
 namespace TrackableEntities.Client.Core
@@ -10,7 +8,7 @@ namespace TrackableEntities.Client.Core
         /// <summary>
         /// Notification that an entity has changed.
         /// </summary>
-        event EventHandler EntityChanged;
+        event EventHandler? EntityChanged;
 
         /// <summary>
         /// Turn change-tracking on and off.
@@ -25,7 +23,7 @@ namespace TrackableEntities.Client.Core
         /// <summary>
         /// For internal use.
         /// </summary>
-        void SetTracking(bool value, ObjectVisitationHelper visitationHelper, bool oneToManyOnly, EventHandler entityChanged = null);
+        void SetTracking(bool value, ObjectVisitationHelper visitationHelper, bool oneToManyOnly, EventHandler? entityChanged = null);
 
         /// <summary>
         /// Get entities that have been marked as Added, Modified or Deleted.
@@ -51,6 +49,6 @@ namespace TrackableEntities.Client.Core
         /// <summary>
         /// ITrackable parent referencing items in this collection.
         /// </summary>
-        ITrackable Parent { get; set; }
+        ITrackable? Parent { get; set; }
     }
 }

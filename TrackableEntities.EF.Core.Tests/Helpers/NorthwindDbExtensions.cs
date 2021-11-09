@@ -24,6 +24,10 @@ namespace TrackableEntities.EF.Core.Tests.Helpers
             {
                 context.Orders.Add(order);
             }
+            foreach (var area in model.Areas)
+            {
+                context.Areas.Add(area);
+            }
             foreach (var territory in model.Territories)
             {
                 context.Territories.Add(territory);
@@ -31,7 +35,7 @@ namespace TrackableEntities.EF.Core.Tests.Helpers
             foreach (var employee in model.Employees)
             {
                 context.Employees.Add(employee);
-            }
+            }            
             context.SaveChanges();
         }
     }

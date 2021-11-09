@@ -30,11 +30,11 @@ namespace TrackableEntities.Client.Core
 
         public abstract bool IsAssignable(Type type, Type from);
 
-        public abstract Type GetBaseType(Type type);
+        public abstract Type? GetBaseType(Type? type);
 
         public abstract Type[] GetGenericArguments(Type type);
 
-        public abstract PropertyInfo GetProperty(Type type, string propertyName);
+        public abstract PropertyInfo? GetProperty(Type type, string propertyName);
 
         public abstract IEnumerable<PropertyInfo> GetProperties(Type type);
 
@@ -52,9 +52,9 @@ namespace TrackableEntities.Client.Core
             return type.GetTypeInfo().IsAssignableFrom(from.GetTypeInfo());
         }
 
-        public override Type GetBaseType(Type type)
+        public override Type? GetBaseType(Type? type)
         {
-            return type.GetTypeInfo().BaseType;
+            return type?.GetTypeInfo().BaseType;
         }
 
         public override Type[] GetGenericArguments(Type type)
@@ -62,7 +62,7 @@ namespace TrackableEntities.Client.Core
             return type.GetTypeInfo().GenericTypeArguments;
         }
 
-        public override PropertyInfo GetProperty(Type type, string propertyName)
+        public override PropertyInfo? GetProperty(Type type, string propertyName)
         {
             return type.GetTypeInfo().GetDeclaredProperty(propertyName);
         }
@@ -72,7 +72,7 @@ namespace TrackableEntities.Client.Core
             return type
                 .BaseTypes()
                 .SelectMany(t => t.GetTypeInfo().DeclaredProperties)
-                .Where(p => !p.GetMethod.IsPrivate);
+                .Where(p => !p.GetMethod?.IsPrivate ?? false);
         }
 
         public override IEnumerable<PropertyInfo> GetPrivateInstanceProperties(Type type)
@@ -80,7 +80,7 @@ namespace TrackableEntities.Client.Core
             return type
                 .GetTypeInfo()
                 .DeclaredProperties
-                .Where(p => !p.GetMethod.IsStatic && p.GetMethod.IsPrivate);
+                .Where(p => !(p.GetMethod?.IsStatic ?? false) && (p.GetMethod?.IsPrivate ?? false));
         }
 
         public override IEnumerable<MethodInfo> GetPrivateInstanceMethods(Type type)

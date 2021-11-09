@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.Linq.Expressions;
 using System.Runtime.CompilerServices;
 using System.Runtime.Serialization;
@@ -19,7 +17,7 @@ namespace TrackableEntities.Client.Core
         /// <summary>
         /// Event for notification of property changes
         /// </summary>
-        public event PropertyChangedEventHandler PropertyChanged;
+        public event PropertyChangedEventHandler? PropertyChanged;
 
         /// <summary>
         /// Fire PropertyChanged event.
@@ -58,8 +56,7 @@ namespace TrackableEntities.Client.Core
         /// <param name="other">Other trackable object</param>
         public void SetEntityIdentifier(IIdentifiable other)
         {
-            var otherEntity = other as EntityBase;
-            if (otherEntity != null)
+            if (other is EntityBase otherEntity)
                 EntityIdentifier = otherEntity.EntityIdentifier;
         }
 
@@ -71,19 +68,18 @@ namespace TrackableEntities.Client.Core
         /// </summary>
         /// <param name="other">An object to compare with this object</param>
         /// <returns></returns>
-        public bool IsEquatable(IIdentifiable other)
+        public bool IsEquatable(IIdentifiable? other)
         {
             if (EntityIdentifier == default)
                 return false;
 
-            var otherEntity = other as EntityBase;
-            if (otherEntity == null)
+            if (other is not EntityBase otherEntity)
                 return false;
 
             return EntityIdentifier.Equals(otherEntity.EntityIdentifier);
         }
 
-        bool IEquatable<IIdentifiable>.Equals(IIdentifiable other)
+        bool IEquatable<IIdentifiable>.Equals(IIdentifiable? other)
         {
             return IsEquatable(other);
         }
@@ -98,7 +94,7 @@ namespace TrackableEntities.Client.Core
         /// Properties on an entity that have been modified.
         /// </summary>
         [DataMember]
-        public ICollection<string> ModifiedProperties { get; set; }
+        public ICollection<string>? ModifiedProperties { get; set; }
 
         /// <summary>
         /// Identifier used for correlation with MergeChanges.

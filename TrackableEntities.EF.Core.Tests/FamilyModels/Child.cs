@@ -14,12 +14,12 @@ namespace TrackableEntities.EF.Core.Tests.FamilyModels
         }
 
         [Key]
-        public string Name { get; set; }
-        public List<Child> Children { get; set; }
+        public string Name { get; set; } = string.Empty;
+        public List<Child> Children { get; set; } = new List<Child>();
 
         [NotMapped]
         public TrackingState TrackingState { get; set; }
         [NotMapped]
-        public ICollection<string> ModifiedProperties { get; set; }
+        public ICollection<string>? ModifiedProperties { get; set; }
     }
 }

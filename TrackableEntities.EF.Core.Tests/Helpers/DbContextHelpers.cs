@@ -38,7 +38,8 @@ namespace TrackableEntities.EF.Core.Tests.Helpers
             {
                 if (n.Entry.Entity is ITrackable trackable)
                 {
-                    modifiedProps.Add(trackable.ModifiedProperties);
+                    if (trackable.ModifiedProperties != null)
+                        modifiedProps.Add(trackable.ModifiedProperties);
                 }
             });
             return modifiedProps;

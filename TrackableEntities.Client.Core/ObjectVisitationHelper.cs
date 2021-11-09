@@ -12,21 +12,10 @@ namespace TrackableEntities.Client.Core
         private readonly Dictionary<object, object> _objectSet;
 
         /// <summary>
-        /// Helper method which initializes the given reference to ObjectVisitationHelper
-        /// if it is null.
-        /// </summary>
-        /// <param name="visitationHelper">Reference to ObjectVisitationHelper</param>
-        public static void EnsureCreated(ref ObjectVisitationHelper visitationHelper)
-        {
-            if (visitationHelper == null)
-                visitationHelper = new ObjectVisitationHelper();
-        }
-
-        /// <summary>
         /// The collection will contain a single object or will be initialized empty
         /// if no/null object is provided.
         /// </summary>
-        public ObjectVisitationHelper(object obj = null)
+        public ObjectVisitationHelper(object? obj = null)
         {
             _objectSet = new Dictionary<object, object>(ObjectReferenceEqualityComparer<object>.Default);
             if (obj != null)
@@ -88,13 +77,11 @@ namespace TrackableEntities.Client.Core
         /// Finds a visited object which matches the given object by the current EqualityComparer
         /// <param name="obj">An object to be found</param>
         /// </summary>
-        public object FindVisited(object obj)
+        public object? FindVisited(object obj)
         {
-            if (obj == null)
-                throw new NullReferenceException("obj");
+            if (obj == null) throw new NullReferenceException(nameof(obj));
 
-            object result;
-            if (_objectSet.TryGetValue(obj, out result)) return result;
+            if (_objectSet.TryGetValue(obj, out object? result)) return result;
             return null;
         }
     }

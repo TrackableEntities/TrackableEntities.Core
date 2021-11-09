@@ -45,16 +45,16 @@ namespace TrackableEntities.Client.Core
                 where TEntity : class, ITrackable, IIdentifiable, INotifyPropertyChanged
         {
             // Check for no items
-            if (updatedItems == null) throw new ArgumentNullException("updatedItems");
+            if (updatedItems == null) throw new ArgumentNullException(nameof(updatedItems));
 
             // Recursively set tracking state for child collections
             changeTracker.MergeChanges(updatedItems, null);
         }
 
         private static void MergeChanges(this ITrackingCollection originalChangeTracker,
-            IEnumerable<ITrackable> updatedItems, ObjectVisitationHelper visitationHelper, bool isTrackableRef = false)
+            IEnumerable<ITrackable> updatedItems, ObjectVisitationHelper? visitationHelper, bool isTrackableRef = false)
         {
-            ObjectVisitationHelper.EnsureCreated(ref visitationHelper);
+            visitationHelper ??= new ObjectVisitationHelper();
 
             // Process each updated item
             foreach (var updatedItem in updatedItems)
@@ -81,13 +81,15 @@ namespace TrackableEntities.Client.Core
                     // Set to 1-1 and M-1 properties
                     foreach (var refProp in navProp.AsReferenceProperty())
                     {
-                        ITrackingCollection refPropChangeTracker = origItem.GetRefPropertyChangeTracker(navProp.Property.Name);
+                        if (refProp.EntityReference is null) continue;
+                        ITrackingCollection? refPropChangeTracker = origItem.GetRefPropertyChangeTracker(navProp.Property?.Name);
                         refPropChangeTracker?.MergeChanges(new[] { refProp.EntityReference }, visitationHelper, true);
                     }
 
                     // Set 1-M and M-M properties
                     foreach (var colProp in navProp.AsCollectionProperty())
                     {
+                        if (navProp.Property is null || colProp.EntityCollection is null) continue;
                         var origItemsChangeTracker = origItem.GetEntityCollectionProperty<ITrackingCollection>(navProp.Property).EntityCollection;
                         // Merge changes into trackable children
                         if (origItemsChangeTracker != null)
@@ -148,6 +150,7 @@ namespace TrackableEntities.Client.Core
                 // Process 1-1 and M-1 properties
                 foreach (var refProp in navProp.AsReferenceProperty())
                 {
+                    if (refProp.EntityReference is null) continue;
                     // See if ref prop has changes
                     bool refPropHasChanges = refProp.EntityReference.HasChanges(visitationHelper, cachedResults);
                     cachedResults[refProp.EntityReference] = refPropHasChanges;
@@ -157,6 +160,7 @@ namespace TrackableEntities.Client.Core
                 // Process 1-M and M-M properties
                 foreach (var colProp in navProp.AsCollectionProperty<ITrackingCollection>())
                 {
+                    if (colProp.EntityCollection is null) continue;
                     // See if there are any cached deletes
                     var cachedDeletes = colProp.EntityCollection.CachedDeletes;
                     if (cachedDeletes.Count > 0) return true;
@@ -200,7 +204,7 @@ namespace TrackableEntities.Client.Core
             return items.Clone();
         }
 
-        private static ITrackable GetEquatableItem
+        private static ITrackable? GetEquatableItem
             (this IEnumerable<ITrackable> sourceItems, ITrackable sourceItem, bool isTrackableRef)
         {
             // Get first matching item
@@ -220,14 +224,15 @@ namespace TrackableEntities.Client.Core
                 .Where(p => p.CanWrite)
                 .Except(targetItem.GetNavigationProperties(false).Select(np => np.Property)))
             {
+                if (prop is null) continue;
                 // Skip tracking properties
                 if (prop.Name == Constants.TrackingProperties.TrackingState
                     || prop.Name == Constants.TrackingProperties.ModifiedProperties)
                     continue;
 
                 // Get source item prop value
-                object sourceValue = prop.GetValue(sourceItem, null);
-                object targetValue = prop.GetValue(targetItem, null);
+                object? sourceValue = prop.GetValue(sourceItem, null);
+                object? targetValue = prop.GetValue(targetItem, null);
 
                 // Continue if source is null or source and target equal
                 if (sourceValue == null || sourceValue.Equals(targetValue))
@@ -243,12 +248,13 @@ namespace TrackableEntities.Client.Core
                 .OfReferenceType()
                 .Where(np => np.Property.CanWrite))
             {
-                ITrackable targetValue = refProp.EntityReference;
+                if (refProp.Property is null) continue;
+                ITrackable? targetValue = refProp.EntityReference;
 
                 // Skip non-null trackable
                 if (targetValue != null) continue;
 
-                ITrackable sourceValue = sourceItem.GetEntityReferenceProperty(refProp.Property).EntityReference;
+                ITrackable? sourceValue = sourceItem.GetEntityReferenceProperty(refProp.Property).EntityReference;
 
                 // Continue if source is null
                 if (sourceValue == null) continue;

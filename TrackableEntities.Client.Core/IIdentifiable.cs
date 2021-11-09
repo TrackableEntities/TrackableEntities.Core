@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace TrackableEntities.Client.Core
+﻿namespace TrackableEntities.Client.Core
 {
     /// <summary>
     /// Interface implemented by entities which perform MergeChanges

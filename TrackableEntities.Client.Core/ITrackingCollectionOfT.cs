@@ -14,6 +14,6 @@ namespace TrackableEntities.Client.Core
         /// Get entities that have been marked as Added, Modified or Deleted.
         /// </summary>
         /// <returns>Collection containing only changed entities</returns>
-        ChangeTrackingCollection<TEntity> GetChanges();
+        ChangeTrackingCollection<TEntity> GetChanges(CloneMethod cloneMethod);
     }
 }

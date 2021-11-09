@@ -11,16 +11,16 @@ namespace TrackableEntities.EF.Core.Tests.NorthwindModels
         public int OrderDetailId { get; set; }
         public int OrderId { get; set; }
         [ForeignKey("OrderId")]
-        public Order Order { get; set; }
+        public Order? Order { get; set; }
         public int ProductId { get; set; }
         [ForeignKey("ProductId")]
-        public Product Product { get; set; }
+        public Product? Product { get; set; }
         public decimal UnitPrice { get; set; }
         public double Quantity { get; set; }
 
         [NotMapped]
         public TrackingState TrackingState { get; set; }
         [NotMapped]
-        public ICollection<string> ModifiedProperties { get; set; }
+        public ICollection<string>? ModifiedProperties { get; set; }
     }
 }

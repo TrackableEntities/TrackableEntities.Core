@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Runtime.CompilerServices;
+﻿using System.Runtime.CompilerServices;
 
 namespace TrackableEntities.Client.Core
 {
@@ -29,7 +28,7 @@ namespace TrackableEntities.Client.Core
         /// <param name="x">The first object of type T to compare.</param>
         /// <param name="y">The second object of type T to compare.</param>
         /// <returns>true if the specified objects are equal; otherwise, false.</returns>
-        public bool Equals(T x, T y)
+        public bool Equals(T? x, T? y)
         {
             return ReferenceEquals(x, y);
         }

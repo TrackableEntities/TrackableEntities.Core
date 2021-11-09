@@ -205,7 +205,7 @@ namespace TrackableEntities.EF.Core.Tests
             child.Children.RemoveAt(2);
             child.Children.RemoveAt(1);
             var grandchild = child.Children[0];
-            grandchild.Children = null;
+            grandchild.Children = new List<Child>();
             parent.TrackingState = TrackingState.Unchanged;
             child.TrackingState = TrackingState.Deleted;
             grandchild.TrackingState = TrackingState.Deleted;

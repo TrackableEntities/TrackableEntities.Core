@@ -3,40 +3,42 @@ using System.Reflection;
 using System.ArrayExtensions;
 using TrackableEntities.Common.Core;
 using System.Linq;
+using System.Diagnostics.CodeAnalysis;
 
 namespace System
 {
     public static class ObjectExtensions
     {
-        private static readonly MethodInfo CloneMethod = typeof(Object).GetMethod("MemberwiseClone", BindingFlags.NonPublic | BindingFlags.Instance);
+        [NotNull]
+        private static readonly MethodInfo? CloneMethod = typeof(object).GetMethod(nameof(MemberwiseClone), BindingFlags.NonPublic | BindingFlags.Instance);
 
         public static bool IsPrimitive(this Type type)
         {
-            if (type == typeof(String)) return true;
+            if (type == typeof(string)) return true;
             return (type.IsValueType & type.IsPrimitive);
         }
 
-        public static Object Copy(this Object originalObject)
+        public static object? Copy(this object? originalObject)
         {
-            return InternalCopy(originalObject, new Dictionary<Object, Object>(new ReferenceEqualityComparer()));
+            return InternalCopy(originalObject, new Dictionary<object, object>(new ReferenceEqualityComparer()));
         }
-        public static Object CopyChanges(this object originalObject)
+        public static object? CopyChanges(this object? originalObject)
         {
-            return InternalCopy(originalObject, new Dictionary<Object, Object>(new ReferenceEqualityComparer()), true);
+            return InternalCopy(originalObject, new Dictionary<object, object>(new ReferenceEqualityComparer()), true);
         }
 
-        private static Object InternalCopy(Object originalObject, IDictionary<Object, Object> visited, bool changesOnly = false)
+        private static object? InternalCopy(object? originalObject, IDictionary<object, object> visited, bool changesOnly = false)
         {
             if (originalObject == null) return null;
             var typeToReflect = originalObject.GetType();
             if (IsPrimitive(typeToReflect)) return originalObject;
             if (visited.ContainsKey(originalObject)) return visited[originalObject];
-            if (typeof(Delegate).IsAssignableFrom(typeToReflect)) return null;
-            var cloneObject = CloneMethod.Invoke(originalObject, null);
+            if (typeof(Delegate).IsAssignableFrom(typeToReflect)) return null;            
+            var cloneObject = CloneMethod.Invoke(originalObject, null) ?? new object();
             if (typeToReflect.IsArray)
             {
                 var arrayType = typeToReflect.GetElementType();
-                if (IsPrimitive(arrayType) == false)
+                if (arrayType != null && IsPrimitive(arrayType) == false)
                 {
                     if (changesOnly && (cloneObject is ITrackable[] trackedArray))
                     {
@@ -67,7 +69,9 @@ namespace System
             }
         }
 
-        private static void CopyFields(object originalObject, IDictionary<object, object> visited, object cloneObject, Type typeToReflect, BindingFlags bindingFlags = BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.FlattenHierarchy, Func<FieldInfo, bool> filter = null, bool changesOnly = false)
+        private static void CopyFields(object originalObject, IDictionary<object, object> visited, object cloneObject, Type typeToReflect, 
+            BindingFlags bindingFlags = BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.FlattenHierarchy, 
+            Func<FieldInfo, bool>? filter = null, bool changesOnly = false)
         {
             foreach (FieldInfo fieldInfo in typeToReflect.GetFields(bindingFlags))
             {
@@ -78,23 +82,18 @@ namespace System
                 fieldInfo.SetValue(cloneObject, clonedFieldValue);
             }
         }
-        public static T Copy<T>(this T original)
-        {
-            return (T)Copy((Object)original);
-        }
-        public static T CopyChanges<T>(this T original)
-        {
-            return (T)CopyChanges((Object)original);
-        }
+
+        public static T? Copy<T>(this T original) => (T?)Copy((object?)original);
+        public static T? CopyChanges<T>(this T original) => (T?)CopyChanges((object?)original);        
     }
 
     public class ReferenceEqualityComparer : EqualityComparer<Object>
     {
-        public override bool Equals(object x, object y)
+        public override bool Equals(object? x, object? y)
         {
             return ReferenceEquals(x, y);
         }
-        public override int GetHashCode(object obj)
+        public override int GetHashCode(object? obj)
         {
             if (obj == null) return 0;
             return obj.GetHashCode();

@@ -4,14 +4,21 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+//using System.Text.Json;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using TrackableEntities.Common.Core;
 
 namespace TrackableEntities.Client.Core
 {
+    public enum CloneMethod
+    {
+        JsonSerialized,
+        Memberwise
+    }
     public static class TrackableExtensions
     {
+
         /// <summary>
         /// Set tracking state to Unchanged on an entity and its child collections.
         /// </summary>
@@ -33,9 +40,9 @@ namespace TrackableEntities.Client.Core
                 item.AcceptChanges(null);
         }
 
-        private static void AcceptChanges(this ITrackable item, ObjectVisitationHelper visitationHelper)
+        private static void AcceptChanges(this ITrackable item, ObjectVisitationHelper? visitationHelper)
         {
-            ObjectVisitationHelper.EnsureCreated(ref visitationHelper);
+            visitationHelper ??= new ObjectVisitationHelper();
 
             // Prevent endless recursion
             if (!visitationHelper.TryVisit(item)) return;
@@ -45,18 +52,18 @@ namespace TrackableEntities.Client.Core
             {
                 // Apply changes to 1-1 and M-1 properties
                 foreach (var refProp in navProp.AsReferenceProperty())
-                    refProp.EntityReference.AcceptChanges(visitationHelper);
+                    refProp.EntityReference?.AcceptChanges(visitationHelper);
 
                 // Apply changes to 1-M properties
                 foreach (var colProp in navProp.AsCollectionProperty<IList>())
                 {
                     var items = colProp.EntityCollection;
+                    if (items == null) continue;
                     var count = items.Count;
                     for (int i = count - 1; i > -1; i--)
                     {
                         // Stop recursion if trackable hasn't been visited
-                        var trackable = items[i] as ITrackable;
-                        if (trackable != null)
+                        if (items[i] is ITrackable trackable)
                         {
                             if (trackable.TrackingState == TrackingState.Deleted)
                                 // Remove items marked as deleted
@@ -83,8 +90,7 @@ namespace TrackableEntities.Client.Core
         public static IEnumerable<EntityNavigationProperty>
             GetNavigationProperties(this ITrackable entity, bool skipNulls = true)
         {
-            INavigationPropertyInspector inspector = entity as INavigationPropertyInspector;
-            if (inspector == null)
+            if (entity is not INavigationPropertyInspector inspector)
                 inspector = new DefaultNavigationPropertyInspector(entity);
 
             foreach (var navProp in inspector.GetNavigationProperties())
@@ -250,8 +256,8 @@ namespace TrackableEntities.Client.Core
         /// The parent <see cref="ChangeTrackingCollection{TEntity}"/> EntityChanged event handler
         /// to be added/removed to all entities in the graph.
         /// </param>
-        public static void SetTracking(this ITrackable item, bool enableTracking,
-            ObjectVisitationHelper visitationHelper = null, bool oneToManyOnly = false, EventHandler entityChanged = null)
+        public static void SetTracking(this ITrackable item, bool enableTracking, ObjectVisitationHelper visitationHelper, bool oneToManyOnly = false, 
+            EventHandler? entityChanged = null)
         {
             // Iterator entity properties
             foreach (var navProp in item.GetNavigationProperties())
@@ -263,7 +269,7 @@ namespace TrackableEntities.Client.Core
                     foreach (var refProp in navProp.AsReferenceProperty())
                     {
                         // Get ref prop change tracker
-                        ITrackingCollection refChangeTracker = item.GetRefPropertyChangeTracker(refProp.Property.Name);
+                        ITrackingCollection? refChangeTracker = item.GetRefPropertyChangeTracker(refProp.Property?.Name);
                         if (refChangeTracker != null)
                         {
                             // Set tracking on ref prop change tracker
@@ -279,15 +285,14 @@ namespace TrackableEntities.Client.Core
                     bool isOneToMany = !IsManyToManyChildCollection(colProp.EntityCollection);
                     if (!oneToManyOnly || isOneToMany)
                     {
-                        colProp.EntityCollection.SetTracking(enableTracking, visitationHelper, oneToManyOnly, entityChanged);
-                        colProp.EntityCollection.SetHandler(enableTracking, entityChanged);
+                        colProp.EntityCollection?.SetTracking(enableTracking, visitationHelper, oneToManyOnly, entityChanged);
+                        colProp.EntityCollection?.SetHandler(enableTracking, entityChanged);
                     }
                 }
             }
         }
 
-        private static void SetHandler(this ITrackingCollection trackableCollection, bool handle,
-            EventHandler entityChanged)
+        private static void SetHandler(this ITrackingCollection trackableCollection, bool handle, EventHandler? entityChanged)
         {
             if (entityChanged == null) return;
             if (handle)
@@ -303,10 +308,9 @@ namespace TrackableEntities.Client.Core
         /// <param name="state">Change-tracking state of an entity</param>
         /// <param name="visitationHelper">Circular reference checking helper</param>
         /// <param name="isManyToManyItem">True is an item is treated as part of an M-M collection</param>
-        public static void SetState(this ITrackable item, TrackingState state, ObjectVisitationHelper visitationHelper,
-            bool isManyToManyItem = false)
+        public static void SetState(this ITrackable item, TrackingState state, ObjectVisitationHelper? visitationHelper, bool isManyToManyItem = false)
         {
-            ObjectVisitationHelper.EnsureCreated(ref visitationHelper);
+            visitationHelper ??= new ObjectVisitationHelper();
 
             // Prevent endless recursion
             if (!visitationHelper.TryVisit(item)) return;
@@ -320,6 +324,7 @@ namespace TrackableEntities.Client.Core
                 {
                     // Process 1-M and M-M properties
                     // Set state on child entities
+                    if (colProp.EntityCollection is null) continue;
                     bool isManyToManyChildCollection = IsManyToManyChildCollection(colProp.EntityCollection);
                     foreach (ITrackable trackableChild in colProp.EntityCollection)
                     {
@@ -358,16 +363,16 @@ namespace TrackableEntities.Client.Core
         /// <param name="item">Trackable object</param>
         /// <param name="modified">Properties on an entity that have been modified</param>
         /// <param name="visitationHelper">Circular reference checking helper</param>
-        public static void SetModifiedProperties(this ITrackable item,
-            ICollection<string> modified, ObjectVisitationHelper visitationHelper = null)
+        public static void SetModifiedProperties(this ITrackable item, ICollection<string>? modified, ObjectVisitationHelper? visitationHelper = null)
         {
             // Prevent endless recursion
-            ObjectVisitationHelper.EnsureCreated(ref visitationHelper);
+            visitationHelper ??= new ObjectVisitationHelper();
             if (!visitationHelper.TryVisit(item)) return;
 
             // Iterate entity properties
             foreach (var colProp in item.GetNavigationProperties().OfCollectionType<ITrackingCollection>())
             {
+                if (colProp.EntityCollection is null) continue;
                 // Recursively set modified
                 foreach (ITrackable child in colProp.EntityCollection)
                 {
@@ -382,20 +387,18 @@ namespace TrackableEntities.Client.Core
         /// </summary>
         /// <param name="changeTracker">Change-tracking collection</param>
         /// <param name="visitationHelper">Circular reference checking helper</param>
-        public static void RemoveRestoredDeletes(this ITrackingCollection changeTracker, ObjectVisitationHelper visitationHelper = null)
+        public static void RemoveRestoredDeletes(this ITrackingCollection changeTracker, ObjectVisitationHelper? visitationHelper = null)
         {
-            ObjectVisitationHelper.EnsureCreated(ref visitationHelper);
+            visitationHelper ??= new ObjectVisitationHelper();
 
             // Iterate items in change-tracking collection
-            var items = changeTracker as IList;
-            if (items == null) return;
+            if (changeTracker is not IList items) return;
             var count = items.Count;
 
             for (int i = count - 1; i > -1; i--)
             {
                 // Get trackable item
-                var item = items[i] as ITrackable;
-                if (item == null) continue;
+                if (items[i] is not ITrackable item) continue;
 
                 // Prevent endless recursion
                 if (visitationHelper.TryVisit(item))
@@ -407,7 +410,7 @@ namespace TrackableEntities.Client.Core
                         foreach (var refProp in navProp.AsReferenceProperty())
                         {
                             // Get changed ref prop
-                            ITrackingCollection refChangeTracker = item.GetRefPropertyChangeTracker(refProp.Property.Name);
+                            ITrackingCollection? refChangeTracker = item.GetRefPropertyChangeTracker(refProp.Property?.Name);
 
                             // Remove deletes on rep prop
                             if (refChangeTracker != null) refChangeTracker.RemoveRestoredDeletes(visitationHelper);
@@ -416,7 +419,7 @@ namespace TrackableEntities.Client.Core
                         // Process 1-M and M-M properties
                         foreach (var colProp in navProp.AsCollectionProperty<ITrackingCollection>())
                         {
-                            colProp.EntityCollection.RemoveRestoredDeletes(visitationHelper);
+                            colProp.EntityCollection?.RemoveRestoredDeletes(visitationHelper);
                         }
                     }
                 }
@@ -437,9 +440,9 @@ namespace TrackableEntities.Client.Core
         /// </summary>
         /// <param name="changeTracker">Change-tracking collection</param>
         /// <param name="visitationHelper">Circular reference checking helper</param>
-        public static void RestoreDeletes(this ITrackingCollection changeTracker, ObjectVisitationHelper visitationHelper = null)
+        public static void RestoreDeletes(this ITrackingCollection changeTracker, ObjectVisitationHelper? visitationHelper = null)
         {
-            ObjectVisitationHelper.EnsureCreated(ref visitationHelper);
+            visitationHelper ??= new ObjectVisitationHelper();
 
             // Get cached deletes
             var removedDeletes = changeTracker.CachedDeletes;
@@ -451,8 +454,7 @@ namespace TrackableEntities.Client.Core
                 changeTracker.InternalTracking = false;
                 foreach (var delete in removedDeletes)
                 {
-                    var items = changeTracker as IList;
-                    if (items != null && !items.Contains(delete))
+                    if (changeTracker is IList items && !items.Contains(delete))
                         items.Add(delete);
                 }
                 changeTracker.InternalTracking = isTracking;
@@ -470,7 +472,7 @@ namespace TrackableEntities.Client.Core
                     foreach (var refProp in navProp.AsReferenceProperty())
                     {
                         // Get changed ref prop
-                        ITrackingCollection refChangeTracker = item.GetRefPropertyChangeTracker(refProp.Property.Name);
+                        ITrackingCollection? refChangeTracker = item.GetRefPropertyChangeTracker(refProp.Property?.Name);
 
                         // Restore deletes on rep prop
                         if (refChangeTracker != null) refChangeTracker.RestoreDeletes(visitationHelper);
@@ -479,11 +481,13 @@ namespace TrackableEntities.Client.Core
                     // Process 1-M and M-M properties
                     foreach (var colProp in navProp.AsCollectionProperty<ITrackingCollection>())
                     {
-                        colProp.EntityCollection.RestoreDeletes(visitationHelper);
+                        colProp.EntityCollection?.RestoreDeletes(visitationHelper);
                     }
                 }
             }
         }
+
+        private const CloneMethod DefaultCloneMethod = CloneMethod.Memberwise;
 
         /// <summary>
         /// Performs a deep copy using Json binary serializer.
@@ -491,10 +495,9 @@ namespace TrackableEntities.Client.Core
         /// <typeparam name="T">Entity type</typeparam>
         /// <param name="item">Trackable object</param>
         /// <returns>Cloned Trackable object</returns>
-        public static T Clone<T>(this T item)
-            where T : class, ITrackable
-        {
-            return CloneObject(item);
+        public static T? Clone<T>(this T item, CloneMethod cloneMethod = DefaultCloneMethod) where T : class, ITrackable
+        {            
+            return CloneObject(item, cloneMethod: cloneMethod);
         }
 
         /// <summary>
@@ -503,45 +506,49 @@ namespace TrackableEntities.Client.Core
         /// <typeparam name="T">Entity type</typeparam>
         /// <param name="items">Collection of Trackable objects</param>
         /// <returns>Cloned collection of Trackable object</returns>
-        public static IEnumerable<T> Clone<T>(this IEnumerable<T> items)
-            where T : class, ITrackable
+        public static IEnumerable<T> Clone<T>(this IEnumerable<T> items, CloneMethod cloneMethod = DefaultCloneMethod) where T : class, ITrackable
         {
-            return CloneObject(new CollectionSerializationHelper<T>() { Result = items }).Result;
+            return CloneObject(new CollectionSerializationHelper<T>() { Result = items }, cloneMethod: cloneMethod)?.Result ?? Enumerable.Empty<T>();
         }
 
         private class CollectionSerializationHelper<T>
         {
             [JsonProperty]
-            public IEnumerable<T> Result;
+            public IEnumerable<T> Result = Enumerable.Empty<T>();
         }
 
-        internal static T CloneObject<T>(T item, IContractResolver contractResolver = null)
+        internal static T? CloneObject<T>(T item, IContractResolver? contractResolver = null, CloneMethod cloneMethod = DefaultCloneMethod)
             where T : class
-        {
-            using (var stream = new MemoryStream())
+        {        
+            if (cloneMethod == CloneMethod.Memberwise)
             {
-                var writer = new StreamWriter(stream);
-                using (var jsonWriter = new JsonTextWriter(writer))
-                {
-                    var settings = new JsonSerializerSettings
-                    {
-                        TypeNameHandling = TypeNameHandling.Objects,
-                        ContractResolver = contractResolver ?? new EntityNavigationPropertyResolver(),
-                        PreserveReferencesHandling = PreserveReferencesHandling.All
-                    };
-                    var serWr = JsonSerializer.Create(settings);
-                    serWr.Serialize(jsonWriter, item);
-                    writer.Flush();
-
-                    stream.Position = 0;
-                    var reader = new StreamReader(stream);
-                    var jsonReader = new JsonTextReader(reader);
-                    settings.ContractResolver = new EntityNavigationPropertyResolver();
-                    var serRd = JsonSerializer.Create(settings);
-                    var copy = serRd.Deserialize<T>(jsonReader);
-                    return copy;
-                }
+                var t = item.Copy();
+                return t;
             }
+            //cloneMethod JsonSerialize                        
+            using var stream = new MemoryStream();
+            var writer = new StreamWriter(stream);
+            using var jsonWriter = new JsonTextWriter(writer);
+            var settings = new JsonSerializerSettings
+            {
+                TypeNameHandling = TypeNameHandling.Objects,
+                ContractResolver = contractResolver ?? new EntityNavigationPropertyResolver(),
+                PreserveReferencesHandling = PreserveReferencesHandling.All
+            };
+            var serWr = JsonSerializer.Create(settings);
+            serWr.Serialize(jsonWriter, item);
+            writer.Flush();
+
+            stream.Position = 0;
+            var reader = new StreamReader(stream);
+            var jsonReader = new JsonTextReader(reader);
+            settings.ContractResolver = new EntityNavigationPropertyResolver();
+            var serRd = JsonSerializer.Create(settings);
+            var copy = serRd.Deserialize<T>(jsonReader);
+            if (copy is null)
+                throw new InvalidCastException();
+            return copy;
+
         }
 
         private class EntityNavigationPropertyResolver : DefaultContractResolver
@@ -552,8 +559,7 @@ namespace TrackableEntities.Client.Core
                 property.ShouldSerialize =
                     instance =>
                     {
-                        var entity = instance as ITrackable;
-                        if (entity == null) return true;
+                        if (instance is not ITrackable entity) return true;
 
                         // The current property is a navigation property and its value is null
                         bool isEmptyNavProp =
@@ -573,10 +579,9 @@ namespace TrackableEntities.Client.Core
         /// <param name="item">ITrackable object</param>
         /// <param name="propertyName">Reference property name</param>
         /// <returns>Reference property change tracker</returns>
-        public static ITrackingCollection GetRefPropertyChangeTracker(this ITrackable item, string propertyName)
+        public static ITrackingCollection? GetRefPropertyChangeTracker(this ITrackable item, string? propertyName)
         {
-            var resolver = item as IRefPropertyChangeTrackerResolver;
-            if (resolver != null)
+            if (item is IRefPropertyChangeTrackerResolver resolver)
                 return resolver.GetRefPropertyChangeTracker(propertyName);
 
             var property = GetChangeTrackingProperty(item.GetType(), propertyName);
@@ -589,20 +594,22 @@ namespace TrackableEntities.Client.Core
         /// </summary>
         /// <param name="changeTracker">Change-tracking collection</param>
         /// <returns></returns>
-        public static bool IsManyToManyChildCollection(ITrackingCollection changeTracker)
+        public static bool IsManyToManyChildCollection(ITrackingCollection? changeTracker)
         {
             // Entity is a M-M child if change-tracking collection has a non-null Parent property
-            bool isManyToManyChild = changeTracker.Parent != null;
-            return isManyToManyChild;
+            return changeTracker?.Parent != null;            
         }
 
         internal static IEnumerable<Type> BaseTypes(this Type type)
         {
-            for (Type t = type; t != null; t = PortableReflectionHelper.Instance.GetBaseType(t))
+            for (Type? t = type; t != null; t = PortableReflectionHelper.Instance.GetBaseType(t))
+            {
+                if (t is null) continue;
                 yield return t;
+            }
         }
 
-        private static PropertyInfo GetChangeTrackingProperty(Type entityType, string propertyName)
+        private static PropertyInfo? GetChangeTrackingProperty(Type entityType, string? propertyName)
         {
             var property = entityType.BaseTypes()
                 .SelectMany(t => PortableReflectionHelper.Instance.GetPrivateInstanceProperties(t))

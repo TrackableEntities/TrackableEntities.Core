@@ -9,18 +9,18 @@ namespace TrackableEntities.EF.Core.Tests.Contexts
 
         public NorthwindDbContext(DbContextOptions options) : base(options) { }
 
-        public DbSet<Category> Categories { get; set; }
-        public DbSet<Product> Products { get; set; }
-        public DbSet<Promo> Promos { get; set; }
-        public DbSet<ProductInfo> ProductInfos { get; set; }
-        public DbSet<Customer> Customers { get; set; }
-        public DbSet<CustomerAddress> CustomerAddresses { get; set; }
-        public DbSet<CustomerSetting> CustomerSettings { get; set; }
-        public DbSet<Order> Orders { get; set; }
-        public DbSet<OrderDetail> OrderDetails { get; set; }
-        public DbSet<Employee> Employees { get; set; }
-        public DbSet<Territory> Territories { get; set; }
-
+        public DbSet<Category> Categories => Set<Category>();
+        public DbSet<Product> Products => Set<Product>();
+        public DbSet<Promo> Promos => Set<Promo>();
+        public DbSet<ProductInfo> ProductInfos => Set<ProductInfo>();
+        public DbSet<Customer> Customers => Set<Customer>();
+        public DbSet<CustomerAddress> CustomerAddresses => Set<CustomerAddress>();
+        public DbSet<CustomerSetting> CustomerSettings => Set<CustomerSetting>();
+        public DbSet<Order> Orders => Set<Order>();
+        public DbSet<OrderDetail> OrderDetails => Set<OrderDetail>();
+        public DbSet<Employee> Employees => Set<Employee>();  
+        public DbSet<Territory> Territories => Set<Territory>();
+        public DbSet<Area> Areas => Set<Area>();
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Customer>()
@@ -35,6 +35,7 @@ namespace TrackableEntities.EF.Core.Tests.Contexts
                 .HasForeignKey<ProductInfo>(pi => pi.ProductId);
             modelBuilder.Entity<EmployeeTerritory>()
                 .HasKey(et => new { et.EmployeeId, et.TerritoryId });
+            modelBuilder.Entity<Area>().ToTable("Area");
         }
     }
 }

@@ -18,6 +18,8 @@ namespace TrackableEntities.EF.Core.Tests
         private const string TestTerritoryId1 = "11111";
         private const string TestTerritoryId2 = "22222";
         private const string TestTerritoryId3 = "33333";
+        private const int TestArea1 = 1;
+        private const int TestArea2 = 2;
         private const int ProductInfo1A = 1;
         private const int ProductInfo1B = 2;
         private const int ProductInfo2A = 1;
@@ -44,6 +46,9 @@ namespace TrackableEntities.EF.Core.Tests
             EnsureTestCustomerSetting(context, TestCustomerId1);
             EnsureTestCustomerSetting(context, TestCustomerId2);
 
+            EnsureTestArea(context, TestArea1);
+            EnsureTestArea(context, TestArea2);
+
             // Test Territories
             EnsureTestTerritory(context, TestTerritoryId1);
             EnsureTestTerritory(context, TestTerritoryId2);
@@ -56,13 +61,24 @@ namespace TrackableEntities.EF.Core.Tests
             // Save changes
             context.SaveChanges();
         }
+
+        private static void EnsureTestArea(NorthwindDbContext context, int areaId)
+        {
+            var area = context.Areas.SingleOrDefault(a => a.AreaId == areaId);
+            if (area == null)
+            {
+                area = new Area { AreaId = areaId, AreaName = "Test Area " + areaId.ToString() };
+                context.Areas.Add(area);
+            }
+        }
+
         private static void EnsureTestTerritory(NorthwindDbContext context, string territoryId)
         {
             var territory = context.Territories
                 .SingleOrDefault(t => t.TerritoryId == territoryId);
             if (territory == null)
             {
-                territory = new Territory { TerritoryId = territoryId, TerritoryDescription = "Test Territory" };
+                territory = new Territory { TerritoryId = territoryId, TerritoryDescription = "Test Territory " + territoryId };
                 context.Territories.Add(territory);
             }
         }
@@ -335,7 +351,7 @@ namespace TrackableEntities.EF.Core.Tests
 
             // Assert
             Assert.NotNull(order.Customer);
-            Assert.Equal(order.CustomerId, order.Customer.CustomerId);
+            Assert.Equal(order.CustomerId, order.Customer?.CustomerId);
         }
 
         [Fact]
@@ -350,7 +366,7 @@ namespace TrackableEntities.EF.Core.Tests
 
             // Assert
             Assert.NotNull(order.Customer);
-            Assert.Equal(order.CustomerId, order.Customer.CustomerId);
+            Assert.Equal(order.CustomerId, order.Customer?.CustomerId);
         }
 
         [Fact]
@@ -365,8 +381,8 @@ namespace TrackableEntities.EF.Core.Tests
             await context.LoadRelatedEntitiesAsync(order);
 
             // Assert
-            Assert.NotNull(order.Customer.Territory);
-            Assert.Equal(order.Customer.TerritoryId, order.Customer.Territory.TerritoryId);
+            Assert.NotNull(order.Customer?.Territory);
+            Assert.Equal(order.Customer?.TerritoryId, order.Customer?.Territory?.TerritoryId);
         }
 
         [Fact]
@@ -381,8 +397,8 @@ namespace TrackableEntities.EF.Core.Tests
             await context.LoadRelatedEntitiesAsync(order);
 
             // Assert
-            Assert.NotNull(order.Customer.CustomerSetting);
-            Assert.Equal(order.Customer.CustomerId, order.Customer.CustomerSetting.CustomerId);
+            Assert.NotNull(order?.Customer?.CustomerSetting);
+            Assert.Equal(order?.Customer?.CustomerId, order?.Customer?.CustomerSetting?.CustomerId);
         }
 
         #endregion
@@ -403,9 +419,9 @@ namespace TrackableEntities.EF.Core.Tests
             // Assert
             var details = order.OrderDetails;
             Assert.DoesNotContain(details, d => d.Product == null);
-            Assert.DoesNotContain(details, d => d.Product.ProductId != d.ProductId);
-            Assert.DoesNotContain(details, d => d.Product.Category == null);
-            Assert.DoesNotContain(details, d => d.Product.Category.CategoryId != d.Product.CategoryId);
+            Assert.DoesNotContain(details, d => d.Product?.ProductId != d.ProductId);
+            Assert.DoesNotContain(details, d => d.Product?.Category == null);
+            Assert.DoesNotContain(details, d => d.Product?.Category?.CategoryId != d.Product?.CategoryId);
         }
 
         [Fact]
@@ -421,9 +437,9 @@ namespace TrackableEntities.EF.Core.Tests
             // Assert
             var details = order.OrderDetails;
             Assert.DoesNotContain(details, d => d.Product == null);
-            Assert.DoesNotContain(details, d => d.Product.ProductId != d.ProductId);
-            Assert.DoesNotContain(details, d => d.Product.Category == null);
-            Assert.DoesNotContain(details, d => d.Product.Category.CategoryId != d.Product.CategoryId);
+            Assert.DoesNotContain(details, d => d.Product?.ProductId != d.ProductId);
+            Assert.DoesNotContain(details, d => d.Product?.Category == null);
+            Assert.DoesNotContain(details, d => d.Product?.Category?.CategoryId != d.Product?.CategoryId);
         }
 
         #endregion

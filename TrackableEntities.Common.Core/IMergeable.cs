@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace TrackableEntities.Common.Core
+﻿namespace TrackableEntities.Common.Core
 {
     /// <summary>
     /// Provides an EntityIdentifier for correlation when merging changes.

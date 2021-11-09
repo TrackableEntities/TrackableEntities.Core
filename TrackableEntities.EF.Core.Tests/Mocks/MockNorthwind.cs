@@ -14,7 +14,7 @@ namespace TrackableEntities.EF.Core.Tests.Mocks
         public List<Employee> Employees { get; set; }
         public List<Territory> Territories { get; set; }
         public List<EmployeeTerritory> EmployeeTerritories { get; set; }
-
+        public List<Area> Areas { get; set; }
         public MockNorthwind()
         {
             Categories = new List<Category>
@@ -146,48 +146,25 @@ namespace TrackableEntities.EF.Core.Tests.Mocks
                 new EmployeeTerritory { EmployeeId = 9, TerritoryId = "03801" },
                 new EmployeeTerritory { EmployeeId = 9, TerritoryId = "06897" },
             };
+
+            Areas = new List<Area>
+            {
+                new Area { AreaId = 1, AreaName = "Northern"},
+                new Area { AreaId = 2, AreaName = "Southern"},
+            };
+
             Territories = new List<Territory>
             {
-                new Territory
-                {
-                    TerritoryId = "01581", TerritoryDescription = "Westboro",
-                },
-                new Territory
-                {
-                    TerritoryId = "01730", TerritoryDescription = "Bedford",
-                },
-                new Territory
-                {
-                    TerritoryId = "01833", TerritoryDescription = "Georgetown",
-                },
-                new Territory
-                {
-                    TerritoryId = "02116", TerritoryDescription = "Boston",
-                },
-                new Territory
-                {
-                    TerritoryId = "02139", TerritoryDescription = "Cambridge",
-                },
-                new Territory
-                {
-                    TerritoryId = "02184", TerritoryDescription = "Braintree",
-                },
-                new Territory
-                {
-                    TerritoryId = "02903", TerritoryDescription = "Providence",
-                },
-                new Territory
-                {
-                    TerritoryId = "03049", TerritoryDescription = "Hollis",
-                },
-                new Territory
-                {
-                    TerritoryId = "03801", TerritoryDescription = "Portsmouth",
-                },
-                new Territory
-                {
-                    TerritoryId = "06897", TerritoryDescription = "Wilton",
-                },
+                new Territory { TerritoryId = "01581", TerritoryDescription = "Westboro"},
+                new Territory { TerritoryId = "01730", TerritoryDescription = "Bedford"},
+                new Territory { TerritoryId = "01833", TerritoryDescription = "Georgetown"},
+                new Territory { TerritoryId = "02116", TerritoryDescription = "Boston"},
+                new Territory { TerritoryId = "02139", TerritoryDescription = "Cambridge"},
+                new Territory { TerritoryId = "02184", TerritoryDescription = "Braintree"},
+                new Territory { TerritoryId = "02903", TerritoryDescription = "Providence"},
+                new Territory { TerritoryId = "03049", TerritoryDescription = "Hollis"},
+                new Territory { TerritoryId = "03801", TerritoryDescription = "Portsmouth"},
+                new Territory { TerritoryId = "06897", TerritoryDescription = "Wilton"},
                 new Territory { TerritoryId = "07960", TerritoryDescription = "Morristown"},
                 new Territory { TerritoryId = "08837", TerritoryDescription = "Edison"},
                 new Territory { TerritoryId = "10019", TerritoryDescription = "New York"},

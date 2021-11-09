@@ -9,11 +9,11 @@ namespace TrackableEntities.EF.Core.Tests.Helpers
 {
     public class NorthwindDbContextFixture : IDisposable
     {
-        private NorthwindDbContext _context;
-        private DbConnection _connection;
-        private DbContextOptions<NorthwindDbContext> _options;
+        private NorthwindDbContext? _context;
+        private DbConnection? _connection;
+        private DbContextOptions<NorthwindDbContext>? _options;
 
-        public void Initialize(bool useInMemory = true, Action seedData = null)
+        public void Initialize(bool useInMemory = true, Action? seedData = null)
         {
             if (useInMemory)
             {

@@ -23,6 +23,7 @@
         {
             /// <summary>Change-tracking property end</summary>
             public const string ChangeTrackingPropEnd = "ChangeTracker";
-        }
+        }        
+
     }
 }

@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Reflection;
+﻿using System.Reflection;
 using TrackableEntities.Common.Core;
 
 namespace TrackableEntities.Client.Core
@@ -29,18 +28,16 @@ namespace TrackableEntities.Client.Core
         /// <summary>
         /// Property information
         /// </summary>
-        public PropertyInfo Property { get; private set; }
+        public PropertyInfo? Property { get; private set; }
 
         /// <summary>
-        /// Casts 'this' to EntityReferenceProperty&lt;TEntity&gt;. Returns an empty enumerable
+        /// Casts 'this' to EntityReferenceProperty<TEntity>>. Returns an empty enumerable
         /// if 'this' is not a reference property or the entity type is incompatible.
         /// </summary>
         /// <typeparam name="TEntity">Type of entity reference</typeparam>
-        public IEnumerable<EntityReferenceProperty<TEntity>> AsReferenceProperty<TEntity>()
-            where TEntity : class, ITrackable
+        public IEnumerable<EntityReferenceProperty<TEntity>> AsReferenceProperty<TEntity>() where TEntity : class, ITrackable
         {
-            var refProp = this as EntityReferenceProperty;
-            if (refProp == null) yield break;
+            if (this is not EntityReferenceProperty refProp) yield break;
 
             var entity = refProp.EntityReference as TEntity;
             if (entity == null && !refProp.ValueIsNull) yield break;
@@ -57,15 +54,14 @@ namespace TrackableEntities.Client.Core
         }
 
         /// <summary>
-        /// Casts 'this' to EntityCollectionProperty&lt;TEntityCollection&gt;. Returns an empty enumerable
+        /// Casts 'this' to EntityCollectionProperty<TEntityCollection>. Returns an empty enumerable
         /// if 'this' is not a collection property or the collection type is incompatible.
         /// </summary>
         /// <typeparam name="TEntityCollection">Type of entity collection</typeparam>
         public IEnumerable<EntityCollectionProperty<TEntityCollection>> AsCollectionProperty<TEntityCollection>()
             where TEntityCollection : class
         {
-            var collProp = this as EntityCollectionProperty;
-            if (collProp == null) yield break;
+            if (this is not EntityCollectionProperty collProp) yield break;
 
             var coll = collProp.EntityCollection as TEntityCollection;
             if (coll == null && !collProp.ValueIsNull) yield break;
@@ -87,7 +83,7 @@ namespace TrackableEntities.Client.Core
         /// </summary>
         public abstract bool ValueIsNull { get; }
 
-        internal EntityNavigationProperty(PropertyInfo propertyInfo)
+        internal EntityNavigationProperty(PropertyInfo? propertyInfo)
         {
             Property = propertyInfo;
         }
@@ -101,15 +97,14 @@ namespace TrackableEntities.Client.Core
         /// <summary>
         /// Entity reference value
         /// </summary>
-        public ITrackable EntityReference { get; private set; }
+        public ITrackable? EntityReference { get; private set; }
 
         /// <summary>
         /// Creates a new EntityReferenceProperty.
         /// </summary>
         /// <param name="propertyInfo">Property information</param>
         /// <param name="entityReference">Entity reference value</param>
-        public EntityReferenceProperty(PropertyInfo propertyInfo, ITrackable entityReference)
-            : base(propertyInfo)
+        public EntityReferenceProperty(PropertyInfo? propertyInfo, ITrackable? entityReference) : base(propertyInfo)
         {
             EntityReference = entityReference;
         }
@@ -127,15 +122,14 @@ namespace TrackableEntities.Client.Core
     /// Represents an entity reference property (1-1 or M-1) of type 'TEntity'.
     /// </summary>
     /// <typeparam name="TEntity">Type of entity reference</typeparam>
-    public class EntityReferenceProperty<TEntity> : EntityReferenceProperty
-        where TEntity : ITrackable
+    public class EntityReferenceProperty<TEntity> : EntityReferenceProperty where TEntity : ITrackable
     {
         /// <summary>
         /// Entity reference value
         /// </summary>
-        new public TEntity EntityReference { get; private set; }
+        new public TEntity? EntityReference { get; private set; }
 
-        internal EntityReferenceProperty(PropertyInfo propertyInfo, TEntity entityReference)
+        internal EntityReferenceProperty(PropertyInfo? propertyInfo, TEntity? entityReference)
             : base(propertyInfo, entityReference)
         {
             EntityReference = entityReference;
@@ -150,14 +144,14 @@ namespace TrackableEntities.Client.Core
         /// <summary>
         /// Entity collection value
         /// </summary>
-        public IEnumerable<ITrackable> EntityCollection { get; private set; }
+        public IEnumerable<ITrackable>? EntityCollection { get; private set; }
 
         /// <summary>
         /// Creates a new EntityCollectionProperty.
         /// </summary>
         /// <param name="propertyInfo">Property</param>
         /// <param name="entityCollection">Entity collection value</param>
-        public EntityCollectionProperty(PropertyInfo propertyInfo, IEnumerable<ITrackable> entityCollection)
+        public EntityCollectionProperty(PropertyInfo? propertyInfo, IEnumerable<ITrackable>? entityCollection)
             : base(propertyInfo)
         {
             EntityCollection = entityCollection;
@@ -181,9 +175,9 @@ namespace TrackableEntities.Client.Core
         /// <summary>
         /// Entity collection value
         /// </summary>
-        new public TEntityCollection EntityCollection { get; private set; }
+        new public TEntityCollection? EntityCollection { get; private set; }
 
-        internal EntityCollectionProperty(PropertyInfo propertyInfo, TEntityCollection entityCollection)
+        internal EntityCollectionProperty(PropertyInfo? propertyInfo, TEntityCollection? entityCollection)
             : base(propertyInfo, entityCollection as IEnumerable<ITrackable>)
         {
             EntityCollection = entityCollection;

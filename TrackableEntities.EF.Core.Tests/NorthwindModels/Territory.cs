@@ -14,17 +14,15 @@ namespace TrackableEntities.EF.Core.Tests.NorthwindModels
         }
 
         [Key]
-        public string TerritoryId { get; set; }
-        public string TerritoryDescription { get; set; }
+        public string TerritoryId { get; set; } = string.Empty;
+        public string TerritoryDescription { get; set; } = string.Empty;
         public List<EmployeeTerritory> EmployeeTerritories { get; set; }
         public List<Customer> Customers { get; set; }
-        public int? AreaId { get; set; }
-        [ForeignKey("AreaId")]
-        public Area Area { get; set; }
+        public List<Area> Areas {  get; set; } = new List<Area>();
 
         [NotMapped]
         public TrackingState TrackingState { get; set; }
         [NotMapped]
-        public ICollection<string> ModifiedProperties { get; set; }
+        public ICollection<string>? ModifiedProperties { get; set; }
     }
 }

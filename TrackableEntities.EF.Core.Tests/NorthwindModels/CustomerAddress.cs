@@ -9,15 +9,15 @@ namespace TrackableEntities.EF.Core.Tests.NorthwindModels
     {
         [Key]
         public int CustomerAddressId { get; set; }
-        public string Street { get; set; }
+        public string Street { get; set; } = string.Empty;
         [Column]
-        public string CustomerId { get; set; }
+        public string CustomerId { get; set; } = string.Empty;
         [ForeignKey("CustomerId")]
-        public Customer Customer { get; set; }
+        public Customer? Customer { get; set; }
 
         [NotMapped]
         public TrackingState TrackingState { get; set; }
         [NotMapped]
-        public ICollection<string> ModifiedProperties { get; set; }
+        public ICollection<string>? ModifiedProperties { get; set; }
     }
 }

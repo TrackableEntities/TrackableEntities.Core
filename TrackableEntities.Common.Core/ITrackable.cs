@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace TrackableEntities.Common.Core
+﻿namespace TrackableEntities.Common.Core
 {
     /// <summary>
     /// Interface implemented by entities that are change-tracked.
@@ -15,6 +13,6 @@ namespace TrackableEntities.Common.Core
         /// <summary>
         /// Properties on an entity that have been modified.
         /// </summary>
-        ICollection<string> ModifiedProperties { get; set; }
+        ICollection<string>? ModifiedProperties { get; set; }
     }
 }

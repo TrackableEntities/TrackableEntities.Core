@@ -8,11 +8,11 @@ namespace TrackableEntities.EF.Core.Tests.Helpers
 {
     public class FamilyDbContextFixture : IDisposable
     {
-        private FamilyDbContext _context;
-        private DbConnection _connection;
-        private DbContextOptions<FamilyDbContext> _options;
+        private FamilyDbContext? _context;
+        private DbConnection? _connection;
+        private DbContextOptions<FamilyDbContext>? _options;
 
-        public void Initialize(bool useInMemory = true, Action seedData = null)
+        public void Initialize(bool useInMemory = true, Action? seedData = null)
         {
             if (useInMemory)
             {
@@ -43,7 +43,7 @@ namespace TrackableEntities.EF.Core.Tests.Helpers
 
         public void Dispose()
         {
-            _connection.Close();
+            _connection?.Close();
         }
     }
 }

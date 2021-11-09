@@ -8,20 +8,20 @@ namespace TrackableEntities.EF.Core.Tests.NorthwindModels
     public partial class Customer : ITrackable
     {
         [Key]
-        public string CustomerId { get; set; }
-        public string CustomerName { get; set; }
+        public string? CustomerId { get; set; }
+        public string? CustomerName { get; set; }
 
-        public string TerritoryId { get; set; }
+        public string? TerritoryId { get; set; }
         [ForeignKey("TerritoryId")]
-        public Territory Territory { get; set; }
+        public Territory? Territory { get; set; }
 
-        public List<Order> Orders { get; set; }
-        public CustomerSetting CustomerSetting { get; set; }
-        public List<CustomerAddress> CustomerAddresses { get; set; }
+        public List<Order> Orders { get; set; } = new List<Order>();
+        public CustomerSetting? CustomerSetting { get; set; }
+        public List<CustomerAddress> CustomerAddresses { get; set; } = new List<CustomerAddress>();
 
         [NotMapped]
         public TrackingState TrackingState { get; set; }
         [NotMapped]
-        public ICollection<string> ModifiedProperties { get; set; }
+        public ICollection<string>? ModifiedProperties { get; set; }
     }
 }

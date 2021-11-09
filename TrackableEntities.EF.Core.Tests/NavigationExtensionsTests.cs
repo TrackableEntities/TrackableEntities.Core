@@ -55,7 +55,7 @@ namespace TrackableEntities.EF.Core.Tests
             var customer = new MockNorthwind().Customers[0];
             customer.CustomerSetting = new CustomerSetting
             {
-                CustomerId = customer.CustomerId,
+                CustomerId = customer.CustomerId!,
                 Customer = customer,
                 Setting = "Setting 1"
             };

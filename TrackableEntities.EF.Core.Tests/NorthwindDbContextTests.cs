@@ -28,11 +28,10 @@ namespace TrackableEntities.EF.Core.Tests
 		{
             // Arrange
             var context = _fixture.GetContext();
-            var product = new Product();
-			product.TrackingState = TrackingState.Unchanged;
+            var product = new Product { TrackingState = TrackingState.Unchanged };
 
-			// Act
-			context.ApplyChanges(product);
+            // Act
+            context.ApplyChanges(product);
 
 			// Assert
 			Assert.Equal(EntityState.Unchanged, context.Entry(product).State);
@@ -43,11 +42,9 @@ namespace TrackableEntities.EF.Core.Tests
 		{
             // Arrange
             var context = _fixture.GetContext();
-            var product = new Product();
-			product.TrackingState = TrackingState.Added;
-
-			// Act
-			context.ApplyChanges(product);
+            var product = new Product { TrackingState = TrackingState.Added };
+            // Act
+            context.ApplyChanges(product);
 
 			// Assert
 			Assert.Equal(EntityState.Added, context.Entry(product).State);
@@ -58,8 +55,7 @@ namespace TrackableEntities.EF.Core.Tests
 		{
             // Arrange
             var context = _fixture.GetContext();
-            var product = new Product();
-			product.TrackingState = TrackingState.Modified;
+            var product = new Product { TrackingState = TrackingState.Modified };
 
 			// Act
 			context.ApplyChanges(product);
@@ -93,8 +89,7 @@ namespace TrackableEntities.EF.Core.Tests
 		{
             // Arrange
             var context = _fixture.GetContext();
-            var product = new Product();
-			product.TrackingState = TrackingState.Deleted;
+            var product = new Product { TrackingState = TrackingState.Deleted };
 
 			// Act
 			context.ApplyChanges(product);
@@ -416,7 +411,7 @@ namespace TrackableEntities.EF.Core.Tests
             Assert.Equal(EntityState.Modified, context.Entry(detail2).State);
             Assert.Equal(EntityState.Deleted, context.Entry(detail3).State);
             Assert.Equal(EntityState.Unchanged, context.Entry(detail4).State);
-            Assert.Equal(EntityState.Unchanged, context.Entry(detail1.Product).State);
+            Assert.Equal(EntityState.Unchanged, context.Entry(detail1.Product!).State);
         }
 
         [Fact]
@@ -436,7 +431,7 @@ namespace TrackableEntities.EF.Core.Tests
             // Assert
             Assert.Equal(EntityState.Added, context.Entry(order).State);
             Assert.Equal(EntityState.Added, context.Entry(orderDetail).State);
-            Assert.Equal(EntityState.Unchanged, context.Entry(product).State);
+            Assert.Equal(EntityState.Unchanged, context.Entry(product!).State);
         }
 
         [Fact]
@@ -495,22 +490,22 @@ namespace TrackableEntities.EF.Core.Tests
             // Arrange
             var context = _fixture.GetContext();
             var order = new MockNorthwind().Orders[0];
-            order.OrderDetails = null;
+            order.OrderDetails = new List<OrderDetail>();
             var address1 = new CustomerAddress
             {
                 CustomerAddressId = 0,
                 Street = "Street1",
-                CustomerId = order.Customer.CustomerId,
+                CustomerId = order.Customer!.CustomerId!,
                 Customer = order.Customer
             };
             var address2 = new CustomerAddress
             {
                 CustomerAddressId = 0,
                 Street = "Street2",
-                CustomerId = order.Customer.CustomerId,
+                CustomerId = order.Customer!.CustomerId!,
                 Customer = order.Customer
             };
-            order.Customer.CustomerAddresses = new List<CustomerAddress>
+            order.Customer!.CustomerAddresses = new List<CustomerAddress>
                 { address1, address2 };
             address1.TrackingState = TrackingState.Added;
             address2.TrackingState = TrackingState.Added;
@@ -531,26 +526,26 @@ namespace TrackableEntities.EF.Core.Tests
             // Arrange
             var context = _fixture.GetContext();
             var order = new MockNorthwind().Orders[0];
-            order.OrderDetails = null;
+            order.OrderDetails = new List<OrderDetail>();
             var address1 = new CustomerAddress
             {
                 CustomerAddressId = 0,
                 Street = "Street1",
-                CustomerId = order.Customer.CustomerId,
+                CustomerId = order.Customer!.CustomerId!,
                 Customer = order.Customer
             };
             var address2 = new CustomerAddress
             {
                 CustomerAddressId = 0,
                 Street = "Street2",
-                CustomerId = order.Customer.CustomerId,
+                CustomerId = order.Customer!.CustomerId!,
                 Customer = order.Customer
             };
             var address3 = new CustomerAddress
             {
                 CustomerAddressId = 1,
                 Street = "Street3",
-                CustomerId = order.Customer.CustomerId,
+                CustomerId = order.Customer!.CustomerId!,
                 Customer = order.Customer
             };
             order.Customer.CustomerAddresses = new List<CustomerAddress> { address1, address2, address3 };
@@ -575,26 +570,26 @@ namespace TrackableEntities.EF.Core.Tests
             // Arrange
             var context = _fixture.GetContext();
             var order = new MockNorthwind().Orders[0];
-            order.OrderDetails = null;
+            order.OrderDetails = new List<OrderDetail>();
             var address1 = new CustomerAddress
             {
                 CustomerAddressId = 0,
                 Street = "Street1",
-                CustomerId = order.Customer.CustomerId,
+                CustomerId = order.Customer!.CustomerId!,
                 Customer = order.Customer
             };
             var address2 = new CustomerAddress
             {
                 CustomerAddressId = 0,
                 Street = "Street2",
-                CustomerId = order.Customer.CustomerId,
+                CustomerId = order.Customer!.CustomerId!,
                 Customer = order.Customer
             };
             var address3 = new CustomerAddress
             {
                 CustomerAddressId = 1,
                 Street = "Street3",
-                CustomerId = order.Customer.CustomerId,
+                CustomerId = order.Customer!.CustomerId!,
                 Customer = order.Customer
             };
             order.Customer.CustomerAddresses = new List<CustomerAddress> { address1, address2, address3 };
@@ -619,26 +614,26 @@ namespace TrackableEntities.EF.Core.Tests
             // Arrange
             var context = _fixture.GetContext();
             var order = new MockNorthwind().Orders[0];
-            order.OrderDetails = null;
+            order.OrderDetails = new List<OrderDetail>();
             var address1 = new CustomerAddress
             {
                 CustomerAddressId = 0,
                 Street = "Street1",
-                CustomerId = order.Customer.CustomerId,
+                CustomerId = order.Customer!.CustomerId!,
                 Customer = order.Customer
             };
             var address2 = new CustomerAddress
             {
                 CustomerAddressId = 0,
                 Street = "Street2",
-                CustomerId = order.Customer.CustomerId,
+                CustomerId = order.Customer!.CustomerId!,
                 Customer = order.Customer
             };
             var address3 = new CustomerAddress
             {
                 CustomerAddressId = 1,
                 Street = "Street3",
-                CustomerId = order.Customer.CustomerId,
+                CustomerId = order.Customer!.CustomerId!,
                 Customer = order.Customer
             };
             order.Customer.CustomerAddresses = new List<CustomerAddress> { address1, address2, address3 };
@@ -663,19 +658,19 @@ namespace TrackableEntities.EF.Core.Tests
             // Arrange
             var context = _fixture.GetContext();
             var order = new MockNorthwind().Orders[0];
-            order.OrderDetails = null;
+            order.OrderDetails = new();
             var address1 = new CustomerAddress
             {
                 CustomerAddressId = 0,
                 Street = "Street1",
-                CustomerId = order.Customer.CustomerId,
+                CustomerId = order.Customer!.CustomerId!,
                 Customer = order.Customer
             };
             var address2 = new CustomerAddress
             {
                 CustomerAddressId = 0,
                 Street = "Street2",
-                CustomerId = order.Customer.CustomerId,
+                CustomerId = order.Customer!.CustomerId!,
                 Customer = order.Customer
             };
             order.Customer.CustomerAddresses = new List<CustomerAddress> { address1, address2 };
@@ -699,26 +694,26 @@ namespace TrackableEntities.EF.Core.Tests
             // Arrange
             var context = _fixture.GetContext();
             var order = new MockNorthwind().Orders[0];
-            order.OrderDetails = null;
+            order.OrderDetails = new();
             var address1 = new CustomerAddress
             {
                 CustomerAddressId = 0,
                 Street = "Street1",
-                CustomerId = order.Customer.CustomerId,
+                CustomerId = order.Customer!.CustomerId!,
                 Customer = order.Customer
             };
             var address2 = new CustomerAddress
             {
                 CustomerAddressId = 0,
                 Street = "Street2",
-                CustomerId = order.Customer.CustomerId,
+                CustomerId = order.Customer!.CustomerId!,
                 Customer = order.Customer
             };
             var address3 = new CustomerAddress
             {
                 CustomerAddressId = 1,
                 Street = "Street3",
-                CustomerId = order.Customer.CustomerId,
+                CustomerId = order.Customer!.CustomerId!,
                 Customer = order.Customer
             };
             order.Customer.CustomerAddresses = new List<CustomerAddress> { address1, address2, address3 };
@@ -744,26 +739,26 @@ namespace TrackableEntities.EF.Core.Tests
             // Arrange
             var context = _fixture.GetContext();
             var order = new MockNorthwind().Orders[0];
-            order.OrderDetails = null;
+            order.OrderDetails = new();
             var address1 = new CustomerAddress
             {
                 CustomerAddressId = 0,
                 Street = "Street1",
-                CustomerId = order.Customer.CustomerId,
+                CustomerId = order.Customer!.CustomerId!,
                 Customer = order.Customer
             };
             var address2 = new CustomerAddress
             {
                 CustomerAddressId = 0,
                 Street = "Street2",
-                CustomerId = order.Customer.CustomerId,
+                CustomerId = order.Customer!.CustomerId!,
                 Customer = order.Customer
             };
             var address3 = new CustomerAddress
             {
                 CustomerAddressId = 1,
                 Street = "Street3",
-                CustomerId = order.Customer.CustomerId,
+                CustomerId = order.Customer!.CustomerId!,
                 Customer = order.Customer
             };
             order.Customer.CustomerAddresses = new List<CustomerAddress> { address1, address2, address3 };
@@ -789,26 +784,26 @@ namespace TrackableEntities.EF.Core.Tests
             // Arrange
             var context = _fixture.GetContext();
             var order = new MockNorthwind().Orders[0];
-            order.OrderDetails = null;
+            order.OrderDetails = new();
             var address1 = new CustomerAddress
             {
                 CustomerAddressId = 0,
                 Street = "Street1",
-                CustomerId = order.Customer.CustomerId,
+                CustomerId = order.Customer!.CustomerId!,
                 Customer = order.Customer
             };
             var address2 = new CustomerAddress
             {
                 CustomerAddressId = 0,
                 Street = "Street2",
-                CustomerId = order.Customer.CustomerId,
+                CustomerId = order.Customer!.CustomerId!,
                 Customer = order.Customer
             };
             var address3 = new CustomerAddress
             {
                 CustomerAddressId = 1,
                 Street = "Street3",
-                CustomerId = order.Customer.CustomerId,
+                CustomerId = order.Customer!.CustomerId!,
                 Customer = order.Customer
             };
             order.Customer.CustomerAddresses = new List<CustomerAddress> { address1, address2, address3 };
@@ -834,19 +829,19 @@ namespace TrackableEntities.EF.Core.Tests
             // Arrange
             var context = _fixture.GetContext();
             var order = new MockNorthwind().Orders[0];
-            order.OrderDetails = null;
+            order.OrderDetails = new();
             var address1 = new CustomerAddress
             {
                 CustomerAddressId = 0,
                 Street = "Street1",
-                CustomerId = order.Customer.CustomerId,
+                CustomerId = order.Customer!.CustomerId!,
                 Customer = order.Customer
             };
             var address2 = new CustomerAddress
             {
                 CustomerAddressId = 0,
                 Street = "Street2",
-                CustomerId = order.Customer.CustomerId,
+                CustomerId = order.Customer!.CustomerId!,
                 Customer = order.Customer
             };
             order.Customer.CustomerAddresses = new List<CustomerAddress> { address1, address2 };
@@ -865,19 +860,19 @@ namespace TrackableEntities.EF.Core.Tests
             // Arrange
             var context = _fixture.GetContext();
             var order = new MockNorthwind().Orders[0];
-            order.OrderDetails = null;
+            order.OrderDetails = new();
             var address1 = new CustomerAddress
             {
                 CustomerAddressId = 0,
                 Street = "Street1",
-                CustomerId = order.Customer.CustomerId,
+                CustomerId = order.Customer!.CustomerId!,
                 Customer = order.Customer
             };
             var address2 = new CustomerAddress
             {
                 CustomerAddressId = 0,
                 Street = "Street2",
-                CustomerId = order.Customer.CustomerId,
+                CustomerId = order.Customer!.CustomerId!,
                 Customer = order.Customer
             };
             order.Customer.CustomerAddresses = new List<CustomerAddress> { address1, address2 };
@@ -901,26 +896,26 @@ namespace TrackableEntities.EF.Core.Tests
             // Arrange
             var context = _fixture.GetContext();
             var order = new MockNorthwind().Orders[0];
-            order.OrderDetails = null;
+            order.OrderDetails = new();
             var address1 = new CustomerAddress
             {
                 CustomerAddressId = 0,
                 Street = "Street1",
-                CustomerId = order.Customer.CustomerId,
+                CustomerId = order.Customer!.CustomerId!,
                 Customer = order.Customer
             };
             var address2 = new CustomerAddress
             {
                 CustomerAddressId = 0,
                 Street = "Street2",
-                CustomerId = order.Customer.CustomerId,
+                CustomerId = order.Customer!.CustomerId!,
                 Customer = order.Customer
             };
             var address3 = new CustomerAddress
             {
                 CustomerAddressId = 1,
                 Street = "Street3",
-                CustomerId = order.Customer.CustomerId,
+                CustomerId = order.Customer!.CustomerId!,
                 Customer = order.Customer
             };
             order.Customer.CustomerAddresses = new List<CustomerAddress> { address1, address2, address3 };
@@ -946,26 +941,26 @@ namespace TrackableEntities.EF.Core.Tests
             // Arrange
             var context = _fixture.GetContext();
             var order = new MockNorthwind().Orders[0];
-            order.OrderDetails = null;
+            order.OrderDetails = new();
             var address1 = new CustomerAddress
             {
                 CustomerAddressId = 0,
                 Street = "Street1",
-                CustomerId = order.Customer.CustomerId,
+                CustomerId = order.Customer!.CustomerId!,
                 Customer = order.Customer
             };
             var address2 = new CustomerAddress
             {
                 CustomerAddressId = 0,
                 Street = "Street2",
-                CustomerId = order.Customer.CustomerId,
+                CustomerId = order.Customer!.CustomerId!,
                 Customer = order.Customer
             };
             var address3 = new CustomerAddress
             {
                 CustomerAddressId = 1,
                 Street = "Street3",
-                CustomerId = order.Customer.CustomerId,
+                CustomerId = order.Customer!.CustomerId!,
                 Customer = order.Customer
             };
             order.Customer.CustomerAddresses = new List<CustomerAddress> { address1, address2, address3 };
@@ -991,26 +986,26 @@ namespace TrackableEntities.EF.Core.Tests
             // Arrange
             var context = _fixture.GetContext();
             var order = new MockNorthwind().Orders[0];
-            order.OrderDetails = null;
+            order.OrderDetails = new();
             var address1 = new CustomerAddress
             {
                 CustomerAddressId = 0,
                 Street = "Street1",
-                CustomerId = order.Customer.CustomerId,
+                CustomerId = order.Customer!.CustomerId!,
                 Customer = order.Customer
             };
             var address2 = new CustomerAddress
             {
                 CustomerAddressId = 0,
                 Street = "Street2",
-                CustomerId = order.Customer.CustomerId,
+                CustomerId = order.Customer!.CustomerId!,
                 Customer = order.Customer
             };
             var address3 = new CustomerAddress
             {
                 CustomerAddressId = 1,
                 Street = "Street3",
-                CustomerId = order.Customer.CustomerId,
+                CustomerId = order.Customer!.CustomerId!,
                 Customer = order.Customer
             };
             order.Customer.CustomerAddresses = new List<CustomerAddress> { address1, address2, address3 };
@@ -1049,9 +1044,9 @@ namespace TrackableEntities.EF.Core.Tests
 
 			// Assert
 			Assert.Equal(EntityState.Unchanged, context.Entry(employee).State);
-            Assert.Equal(EntityState.Unchanged, context.Entry(territory1).State);
-            Assert.Equal(EntityState.Unchanged, context.Entry(territory2).State);
-            Assert.Equal(EntityState.Unchanged, context.Entry(territory3).State);
+            Assert.Equal(EntityState.Unchanged, context.Entry(territory1!).State);
+            Assert.Equal(EntityState.Unchanged, context.Entry(territory2!).State);
+            Assert.Equal(EntityState.Unchanged, context.Entry(territory3!).State);
         }
 
 		[Fact]
@@ -1061,8 +1056,8 @@ namespace TrackableEntities.EF.Core.Tests
 			var context = _fixture.GetContext();
 			var nw = new MockNorthwind();
 			var employee = nw.Employees[0];
-		    var territory1 = employee.EmployeeTerritories[0].Territory;
-		    var territory2 = employee.EmployeeTerritories[1].Territory;
+		    var territory1 = employee.EmployeeTerritories[0].Territory!;
+		    var territory2 = employee.EmployeeTerritories[1].Territory!;
             territory1.TrackingState = TrackingState.Added;
 		    territory2.TrackingState = TrackingState.Modified;
 
@@ -1085,7 +1080,7 @@ namespace TrackableEntities.EF.Core.Tests
 	        var context = _fixture.GetContext();
 	        var nw = new MockNorthwind();
 	        var employee = nw.Employees[0];
-	        var territory1 = employee.EmployeeTerritories[0].Territory;
+	        var territory1 = employee.EmployeeTerritories[0].Territory!;
 	        territory1.TrackingState = TrackingState.Deleted;
 
 	        // Act
@@ -1147,19 +1142,18 @@ namespace TrackableEntities.EF.Core.Tests
             var area = new Area
             {
                 AreaId = 1,
-                AreaName = "Northern",
+                AreaName = "NorthernMod",
                 TrackingState = TrackingState.Modified
             };
-            territory3.AreaId = 1;
-            territory3.Area = area;
+            territory3!.Areas.Add(area);
 
             // Act
             context.ApplyChanges(employee);
 
             // Assert
             Assert.Equal(EntityState.Unchanged, context.Entry(employee).State);
-            Assert.Equal(EntityState.Unchanged, context.Entry(territory1).State);
-            Assert.Equal(EntityState.Unchanged, context.Entry(territory2).State);
+            Assert.Equal(EntityState.Unchanged, context.Entry(territory1!).State);
+            Assert.Equal(EntityState.Unchanged, context.Entry(territory2!).State);
             Assert.Equal(EntityState.Unchanged, context.Entry(territory3).State);
             Assert.Equal(EntityState.Modified, context.Entry(area).State);
         }
@@ -1181,9 +1175,9 @@ namespace TrackableEntities.EF.Core.Tests
 
 			// Assert
 			Assert.Equal(EntityState.Added, context.Entry(employee).State);
-            Assert.Equal(EntityState.Unchanged, context.Entry(territory1).State);
-            Assert.Equal(EntityState.Unchanged, context.Entry(territory2).State);
-            Assert.Equal(EntityState.Unchanged, context.Entry(territory3).State);
+            Assert.Equal(EntityState.Unchanged, context.Entry(territory1!).State);
+            Assert.Equal(EntityState.Unchanged, context.Entry(territory2!).State);
+            Assert.Equal(EntityState.Unchanged, context.Entry(territory3!).State);
         }
 
 		[Fact]
@@ -1196,8 +1190,8 @@ namespace TrackableEntities.EF.Core.Tests
 			employee.TrackingState = TrackingState.Added;
 		    var territory1 = employee.EmployeeTerritories[0].Territory;
 		    var territory2 = employee.EmployeeTerritories[1].Territory;
-		    territory1.TrackingState = TrackingState.Added;
-		    territory2.TrackingState = TrackingState.Modified;
+		    territory1!.TrackingState = TrackingState.Added;
+		    territory2!.TrackingState = TrackingState.Modified;
 
             // Act
             context.ApplyChanges(employee);
@@ -1220,7 +1214,7 @@ namespace TrackableEntities.EF.Core.Tests
 			var employee = nw.Employees[0];
 			employee.TrackingState = TrackingState.Added;
 		    var territory1 = employee.EmployeeTerritories[0].Territory;
-            territory1.TrackingState = TrackingState.Deleted;
+            territory1!.TrackingState = TrackingState.Deleted;
 
             // Act
             context.ApplyChanges(employee);
@@ -1290,9 +1284,9 @@ namespace TrackableEntities.EF.Core.Tests
 
             // Assert
             Assert.Equal(EntityState.Deleted, context.Entry(employee).State);
-            Assert.Equal(EntityState.Unchanged, context.Entry(territory1).State);
-            Assert.Equal(EntityState.Unchanged, context.Entry(territory2).State);
-            Assert.Equal(EntityState.Unchanged, context.Entry(territory3).State);
+            Assert.Equal(EntityState.Unchanged, context.Entry(territory1!).State);
+            Assert.Equal(EntityState.Unchanged, context.Entry(territory2!).State);
+            Assert.Equal(EntityState.Unchanged, context.Entry(territory3!).State);
         }
 
         [Fact]
@@ -1305,8 +1299,8 @@ namespace TrackableEntities.EF.Core.Tests
             employee.TrackingState = TrackingState.Deleted;
             var territory1 = employee.EmployeeTerritories[0].Territory;
             var territory2 = employee.EmployeeTerritories[1].Territory;
-            territory1.TrackingState = TrackingState.Added;
-            territory2.TrackingState = TrackingState.Modified;
+            territory1!.TrackingState = TrackingState.Added;
+            territory2!.TrackingState = TrackingState.Modified;
 
             // Act
             context.ApplyChanges(employee);
@@ -1329,7 +1323,7 @@ namespace TrackableEntities.EF.Core.Tests
             var employee = nw.Employees[0];
             employee.TrackingState = TrackingState.Deleted;
             var territory1 = employee.EmployeeTerritories[0].Territory;
-            territory1.TrackingState = TrackingState.Deleted;
+            territory1!.TrackingState = TrackingState.Deleted;
 
             // Act
             context.ApplyChanges(employee);
@@ -1394,7 +1388,7 @@ namespace TrackableEntities.EF.Core.Tests
 			var nw = new MockNorthwind();
 			var customer = nw.Customers[0];
 			var setting = customer.CustomerSetting = new CustomerSetting 
-				{ CustomerId = customer.CustomerId, Setting = "Setting1", Customer = customer };
+				{ CustomerId = customer.CustomerId!, Setting = "Setting1", Customer = customer };
 
 			// Act
 			context.ApplyChanges(customer);
@@ -1412,7 +1406,7 @@ namespace TrackableEntities.EF.Core.Tests
 			var nw = new MockNorthwind();
 			var customer = nw.Customers[0];
 			var setting = customer.CustomerSetting = new CustomerSetting 
-				{ CustomerId = customer.CustomerId, Setting = "Setting1", Customer = customer };
+				{ CustomerId = customer.CustomerId!, Setting = "Setting1", Customer = customer };
 			setting.TrackingState = TrackingState.Modified;
 
 			// Act
@@ -1431,7 +1425,7 @@ namespace TrackableEntities.EF.Core.Tests
 			var nw = new MockNorthwind();
 			var customer = nw.Customers[0];
 			var setting = customer.CustomerSetting = new CustomerSetting 
-				{ CustomerId = customer.CustomerId, Setting = "Setting1", Customer = customer };
+				{ CustomerId = customer.CustomerId!, Setting = "Setting1", Customer = customer };
 			setting.TrackingState = TrackingState.Added;
 
 			// Act
@@ -1450,7 +1444,7 @@ namespace TrackableEntities.EF.Core.Tests
 			var nw = new MockNorthwind();
 			var customer = nw.Customers[0];
 			var setting = customer.CustomerSetting = new CustomerSetting 
-				{ CustomerId = customer.CustomerId, Setting = "Setting1", Customer = customer };
+				{ CustomerId = customer.CustomerId!, Setting = "Setting1", Customer = customer };
 			setting.TrackingState = TrackingState.Deleted;
 
 			// Act
@@ -1470,7 +1464,7 @@ namespace TrackableEntities.EF.Core.Tests
 			var customer = nw.Customers[0];
 			customer.TrackingState = TrackingState.Added;
 			var setting = customer.CustomerSetting = new CustomerSetting
-				{ CustomerId = customer.CustomerId, Setting = "Setting1", Customer = customer };
+				{ CustomerId = customer.CustomerId!, Setting = "Setting1", Customer = customer };
 
 			// Act
 			context.ApplyChanges(customer);
@@ -1490,7 +1484,7 @@ namespace TrackableEntities.EF.Core.Tests
 			var nw = new MockNorthwind();
 			var customer = nw.Customers[0];
 			customer.TrackingState = TrackingState.Added;
-			var setting = customer.CustomerSetting = new CustomerSetting { CustomerId = customer.CustomerId, Setting = "Setting1", Customer = customer };
+			var setting = customer.CustomerSetting = new CustomerSetting { CustomerId = customer.CustomerId!, Setting = "Setting1", Customer = customer };
 			setting.TrackingState = TrackingState.Modified;
 
 			// Act
@@ -1509,7 +1503,7 @@ namespace TrackableEntities.EF.Core.Tests
 			var nw = new MockNorthwind();
 			var customer = nw.Customers[0];
 			customer.TrackingState = TrackingState.Added;
-			var setting = customer.CustomerSetting = new CustomerSetting { CustomerId = customer.CustomerId, Setting = "Setting1", Customer = customer };
+			var setting = customer.CustomerSetting = new CustomerSetting { CustomerId = customer.CustomerId!, Setting = "Setting1", Customer = customer };
 			setting.TrackingState = TrackingState.Added;
 
 			// Act
@@ -1532,7 +1526,7 @@ namespace TrackableEntities.EF.Core.Tests
             var customer = nw.Customers[0];
             customer.TrackingState = TrackingState.Added;
 
-            var customerSetting = new CustomerSetting() { CustomerId = customer.CustomerId, Setting = "Setting1" };
+            var customerSetting = new CustomerSetting() { CustomerId = customer.CustomerId!, Setting = "Setting1" };
             customer.CustomerSetting = customerSetting;
 
             var order = new Order() { OrderDate = DateTime.Now };
@@ -1561,7 +1555,7 @@ namespace TrackableEntities.EF.Core.Tests
 			var nw = new MockNorthwind();
 			var customer = nw.Customers[0];
 			customer.TrackingState = TrackingState.Added;
-			var setting = customer.CustomerSetting = new CustomerSetting { CustomerId = customer.CustomerId, Setting = "Setting1", Customer = customer };
+			var setting = customer.CustomerSetting = new CustomerSetting { CustomerId = customer.CustomerId!, Setting = "Setting1", Customer = customer };
 			setting.TrackingState = TrackingState.Deleted;
 
 			// Act
@@ -1581,7 +1575,7 @@ namespace TrackableEntities.EF.Core.Tests
 			var customer = nw.Customers[0];
 			customer.TrackingState = TrackingState.Deleted;
 			var setting = customer.CustomerSetting = new CustomerSetting
-				{ CustomerId = customer.CustomerId, Setting = "Setting1", Customer = customer };
+				{ CustomerId = customer.CustomerId!, Setting = "Setting1", Customer = customer };
 
 			// Act
 			context.ApplyChanges(customer);
@@ -1599,7 +1593,7 @@ namespace TrackableEntities.EF.Core.Tests
 			var nw = new MockNorthwind();
 			var customer = nw.Customers[0];
 			customer.TrackingState = TrackingState.Deleted;
-			var setting = customer.CustomerSetting = new CustomerSetting { CustomerId = customer.CustomerId, Setting = "Setting1", Customer = customer };
+			var setting = customer.CustomerSetting = new CustomerSetting { CustomerId = customer.CustomerId!, Setting = "Setting1", Customer = customer };
 			setting.TrackingState = TrackingState.Added;
 
 			// Act
@@ -1618,7 +1612,7 @@ namespace TrackableEntities.EF.Core.Tests
 			var nw = new MockNorthwind();
 			var customer = nw.Customers[0];
 			customer.TrackingState = TrackingState.Deleted;
-			var setting = customer.CustomerSetting = new CustomerSetting { CustomerId = customer.CustomerId, Setting = "Setting1", Customer = customer };
+			var setting = customer.CustomerSetting = new CustomerSetting { CustomerId = customer.CustomerId!, Setting = "Setting1", Customer = customer };
 			setting.TrackingState = TrackingState.Deleted;
 
 			// Act
@@ -1647,7 +1641,7 @@ namespace TrackableEntities.EF.Core.Tests
 
 			// Assert
 			Assert.Equal(EntityState.Unchanged, context.Entry(order).State);
-			Assert.Equal(EntityState.Unchanged, context.Entry(customer).State);
+			Assert.Equal(EntityState.Unchanged, context.Entry(customer!).State);
 		}
 
 		[Fact]
@@ -1658,7 +1652,7 @@ namespace TrackableEntities.EF.Core.Tests
 			var nw = new MockNorthwind();
 			var order = nw.Orders[0];
 			var customer = order.Customer;
-			customer.TrackingState = TrackingState.Modified;
+			customer!.TrackingState = TrackingState.Modified;
 
 			// Act
 			context.ApplyChanges(order);
@@ -1676,7 +1670,7 @@ namespace TrackableEntities.EF.Core.Tests
 			var nw = new MockNorthwind();
 			var order = nw.Orders[0];
 			var customer = order.Customer;
-			customer.TrackingState = TrackingState.Added;
+			customer!.TrackingState = TrackingState.Added;
 
 			// Act
 			context.ApplyChanges(order);
@@ -1697,7 +1691,7 @@ namespace TrackableEntities.EF.Core.Tests
 			var nw = new MockNorthwind();
 			var order = nw.Orders[0];
 			var customer = order.Customer;
-			customer.TrackingState = TrackingState.Deleted;
+			customer!.TrackingState = TrackingState.Deleted;
 
 			// Act
 			context.ApplyChanges(order);
@@ -1722,7 +1716,7 @@ namespace TrackableEntities.EF.Core.Tests
 
 			// Assert
 			Assert.Equal(EntityState.Added, context.Entry(order).State);
-			Assert.Equal(EntityState.Unchanged, context.Entry(customer).State);
+			Assert.Equal(EntityState.Unchanged, context.Entry(customer!).State);
 		}
 
 		[Fact]
@@ -1734,7 +1728,7 @@ namespace TrackableEntities.EF.Core.Tests
 			var order = nw.Orders[0];
 			order.TrackingState = TrackingState.Added;
 			var customer = order.Customer;
-			customer.TrackingState = TrackingState.Modified;
+			customer!.TrackingState = TrackingState.Modified;
 
 			// Act
 			context.ApplyChanges(order);
@@ -1753,7 +1747,7 @@ namespace TrackableEntities.EF.Core.Tests
 			var order = nw.Orders[0];
 			order.TrackingState = TrackingState.Added;
 			var customer = order.Customer;
-			customer.TrackingState = TrackingState.Added;
+			customer!.TrackingState = TrackingState.Added;
 
 			// Act
 			context.ApplyChanges(order);
@@ -1775,7 +1769,7 @@ namespace TrackableEntities.EF.Core.Tests
 			var order = nw.Orders[0];
 			order.TrackingState = TrackingState.Added;
 			var customer = order.Customer;
-			customer.TrackingState = TrackingState.Deleted;
+			customer!.TrackingState = TrackingState.Deleted;
 
 			// Act
 			context.ApplyChanges(order);
@@ -1800,7 +1794,7 @@ namespace TrackableEntities.EF.Core.Tests
 
 			// Assert
 			Assert.Equal(EntityState.Deleted, context.Entry(order).State);
-			Assert.Equal(EntityState.Unchanged, context.Entry(customer).State);
+			Assert.Equal(EntityState.Unchanged, context.Entry(customer!).State);
 		}
 
 		[Fact]
@@ -1812,7 +1806,7 @@ namespace TrackableEntities.EF.Core.Tests
 			var order = nw.Orders[0];
 			order.TrackingState = TrackingState.Deleted;
 			var customer = order.Customer;
-			customer.TrackingState = TrackingState.Modified;
+			customer!.TrackingState = TrackingState.Modified;
 
 			// Act
 			context.ApplyChanges(order);
@@ -1831,7 +1825,7 @@ namespace TrackableEntities.EF.Core.Tests
 			var order = nw.Orders[0];
 			order.TrackingState = TrackingState.Deleted;
 			var customer = order.Customer;
-			customer.TrackingState = TrackingState.Added;
+			customer!.TrackingState = TrackingState.Added;
 
 			// Act
 			context.ApplyChanges(order);
@@ -1853,7 +1847,7 @@ namespace TrackableEntities.EF.Core.Tests
 			var order = nw.Orders[0];
 			order.TrackingState = TrackingState.Deleted;
 			var customer = order.Customer;
-			customer.TrackingState = TrackingState.Deleted;
+			customer!.TrackingState = TrackingState.Deleted;
 
 			// Act
 			context.ApplyChanges(order);
@@ -1874,13 +1868,13 @@ namespace TrackableEntities.EF.Core.Tests
             var northwind = new MockNorthwind();
             var order1 = northwind.Orders[0];
             order1.TrackingState = TrackingState.Modified;
-            order1.Customer.TrackingState = TrackingState.Modified;
+            order1.Customer!.TrackingState = TrackingState.Modified;
             order1.OrderDetails[1].TrackingState = TrackingState.Modified;
             order1.OrderDetails[2].TrackingState = TrackingState.Added;
             order1.OrderDetails[3].TrackingState = TrackingState.Deleted;
 
             var order2 = northwind.Orders[2];
-            order2.Customer.TrackingState = TrackingState.Modified;
+            order2.Customer!.TrackingState = TrackingState.Modified;
             order2.OrderDetails[0].TrackingState = TrackingState.Modified;
             order2.OrderDetails[1].TrackingState = TrackingState.Added;
             order2.OrderDetails[2].TrackingState = TrackingState.Deleted;
@@ -1910,7 +1904,7 @@ namespace TrackableEntities.EF.Core.Tests
             var northwind = new MockNorthwind();
             var order = northwind.Orders[0];
             order.TrackingState = TrackingState.Modified;
-            order.Customer.TrackingState = TrackingState.Modified;
+            order.Customer!.TrackingState = TrackingState.Modified;
 
             // Act
             var context = _fixture.GetContext();
@@ -1928,7 +1922,7 @@ namespace TrackableEntities.EF.Core.Tests
             var northwind = new MockNorthwind();
             var order = northwind.Orders[0];
             order.TrackingState = TrackingState.Modified;
-            order.Customer.TrackingState = TrackingState.Added;
+            order.Customer!.TrackingState = TrackingState.Added;
 
             // Act
             var context = _fixture.GetContext();
@@ -1946,7 +1940,7 @@ namespace TrackableEntities.EF.Core.Tests
             var northwind = new MockNorthwind();
             var order = northwind.Orders[0];
             order.TrackingState = TrackingState.Modified;
-            order.Customer.TrackingState = TrackingState.Deleted;
+            order.Customer!.TrackingState = TrackingState.Deleted;
 
             // Act
             var context = _fixture.GetContext();
@@ -1965,7 +1959,7 @@ namespace TrackableEntities.EF.Core.Tests
             var order = northwind.Orders[0];
             order.TrackingState = TrackingState.Modified;
             order.ModifiedProperties = new List<string> { "OrderDate" };
-            order.Customer.TrackingState = TrackingState.Modified;
+            order.Customer!.TrackingState = TrackingState.Modified;
             order.Customer.ModifiedProperties = new List<string> { "CustomerName" };
 
             // Act

@@ -28,7 +28,7 @@ namespace TrackableEntities.EF.Core
             context.ChangeTracker.TrackGraph(item, node =>
             {
                 // Exit if not ITrackable
-                if (!(node.Entry.Entity is ITrackable trackable)) return;
+                if (node.Entry.Entity is not ITrackable trackable) return;
 
                 // Detach node entity
                 node.Entry.State = EntityState.Detached;
@@ -176,6 +176,7 @@ namespace TrackableEntities.EF.Core
                     n.Entry.State = EntityState.Unchanged;
                 foreach (var reference in n.Entry.References)
                 {
+                    Console.WriteLine(reference);
                     if (!reference.IsLoaded && reference.CurrentValue == null)
                         await reference.LoadAsync();
                 }

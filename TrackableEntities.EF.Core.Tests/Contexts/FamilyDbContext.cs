@@ -9,7 +9,7 @@ namespace TrackableEntities.EF.Core.Tests.Contexts
 
         public FamilyDbContext(DbContextOptions options) : base(options) { }
 
-        public DbSet<Parent> Parents { get; set; }
-        public DbSet<Child> Children { get; set; }
+        public DbSet<Parent> Parents => Set<Parent>();
+        public DbSet<Child> Children => Set<Child>();
     }
 }

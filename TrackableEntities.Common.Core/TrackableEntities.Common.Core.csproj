@@ -1,12 +1,12 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
+    <TargetFramework>net6.0</TargetFramework>
     <PackageId>TrackableEntities.Common.Core</PackageId>
     <PackageVersion>3.1.1</PackageVersion>
     <Authors>Tony Sneed</Authors>
     <Company>Tony Sneed</Company>
-    <Title>Trackable Entities Common for .NET Standard</Title>
+    <Title>Trackable Entities Common for .NET6</Title>
     <Description>Assembly containing TrackingState enum and ITrackable, IMergeable interfaces.</Description>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
     <PackageReleaseNotes>See: https://github.com/TrackableEntities/TrackableEntities.Core/releases/tag/v3.1.1</PackageReleaseNotes>

@@ -2,18 +2,18 @@
 
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
-    <PackageId>TrackableEntities.Common.Core</PackageId>
+    <PackageId>TrackableEntities.Common.NET6</PackageId>
     <PackageVersion>3.1.1</PackageVersion>
     <Authors>Tony Sneed</Authors>
-    <Company>Tony Sneed</Company>
+    <Company></Company>
     <Title>Trackable Entities Common for .NET6</Title>
-    <Description>Assembly containing TrackingState enum and ITrackable, IMergeable interfaces.</Description>
+    <Description>Assembly containing TrackingState enum and ITrackable, IMergeable interfaces for .NET6.</Description>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
-    <PackageReleaseNotes>See: https://github.com/TrackableEntities/TrackableEntities.Core/releases/tag/v3.1.1</PackageReleaseNotes>
-    <PackageTags>change-tracking entity-framework-core n-tier</PackageTags>
+    <PackageReleaseNotes>See: https://github.com/samantha-letourneau/TrackableEntities.Core/releases/tag/v3.1.1</PackageReleaseNotes>
+    <PackageTags>change-tracking entity-framework-core n-tier;NET6</PackageTags>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <PackageProjectUrl>https://github.com/TrackableEntities/TrackableEntities.Core</PackageProjectUrl>
+    <PackageProjectUrl>https://github.com/samantha-letourneau/TrackableEntities.Core</PackageProjectUrl>
     <PackageIcon>icon.png</PackageIcon>
     <IncludeSource>true</IncludeSource>
   </PropertyGroup>

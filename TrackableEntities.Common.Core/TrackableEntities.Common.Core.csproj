@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
-    <PackageId>TrackableEntities.Common</PackageId>
+    <PackageId>TrackableEntities.Common.Core</PackageId>
     <PackageVersion>6.0.0</PackageVersion>
     <Authors>Tony Sneed</Authors>
 	<Company>Tony Sneed</Company>

@@ -13,7 +13,7 @@
     <PackageTags>change-tracking entity-framework-core n-tier</PackageTags>
 	<PackageReleaseNotes>https://github.com/TrackableEntities/TrackableEntities.Core/releases/tag/v6.0.0</PackageReleaseNotes>
 	<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <PackageId>TrackableEntities.EF.NET6</PackageId>
+    <PackageId>TrackableEntities.EF.Core</PackageId>
 	<GenerateDocumentationFile>True</GenerateDocumentationFile>
   </PropertyGroup>
 

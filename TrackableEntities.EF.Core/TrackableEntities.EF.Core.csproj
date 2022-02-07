@@ -2,29 +2,19 @@
 
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
-    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <PackageVersion>6.0.1</PackageVersion>
-    <Authors>Tony Sneed; Samantha Létourneau</Authors>
-    <Company></Company>
+    <PackageVersion>6.0.0</PackageVersion>
+    <Authors>Tony Sneed</Authors>
+    <Company>Tony Sneed</Company>
     <Title>Trackable Entities for EF Core</Title>
-    <Description>Provides an ApplyChanges extension method for DbContext that sets EntityState on trackable entities, so they can be saved by a service in a single transaction. Package updated to work with .NET6.</Description>
+    <Description>Provides an ApplyChanges extension method for DbContext that sets EntityState on trackable entities, so they can be saved by a service in a single transaction</Description>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <PackageProjectUrl>https://github.com/samantha-letourneau/TrackableEntities.Core</PackageProjectUrl>
+	<PackageProjectUrl>https://github.com/TrackableEntities/TrackableEntities.Core</PackageProjectUrl>
     <PackageIcon>icon.png</PackageIcon>
-    <PackageTags>change-tracking entity-framework-core n-tier;.NET6</PackageTags>
-    <PackageReleaseNotes>See: https://github.com/samantha-letourneau/TrackableEntities.Core/releases/tag/v5.0.1</PackageReleaseNotes>
-    <IncludeSource>true</IncludeSource>
+    <PackageTags>change-tracking entity-framework-core n-tier</PackageTags>
+	<PackageReleaseNotes>https://github.com/TrackableEntities/TrackableEntities.Core/releases/tag/v6.0.0</PackageReleaseNotes>
+	<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageId>TrackableEntities.EF.NET6</PackageId>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <DocumentationFile>bin\Debug\netstandard2.1\TrackableEntities.EF.Core.xml</DocumentationFile>
-    <LangVersion>latest</LangVersion>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-    <DocumentationFile>bin\Release\netstandard2.1\TrackableEntities.EF.Core.xml</DocumentationFile>
-    <LangVersion>latest</LangVersion>
+	<GenerateDocumentationFile>True</GenerateDocumentationFile>
   </PropertyGroup>
 
   <ItemGroup>
@@ -32,7 +22,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="6.0.1" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="6.0.0" />
   </ItemGroup>
 
   <ItemGroup>

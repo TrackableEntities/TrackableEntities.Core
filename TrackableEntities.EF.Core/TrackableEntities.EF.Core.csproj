@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
-    <PackageVersion>6.0.0</PackageVersion>
+    <PackageVersion>7.0.0</PackageVersion>
     <Authors>Tony Sneed</Authors>
     <Company>Tony Sneed</Company>
     <Title>Trackable Entities for EF Core</Title>
@@ -11,7 +11,7 @@
 	<PackageProjectUrl>https://github.com/TrackableEntities/TrackableEntities.Core</PackageProjectUrl>
     <PackageIcon>icon.png</PackageIcon>
     <PackageTags>change-tracking entity-framework-core n-tier</PackageTags>
-	<PackageReleaseNotes>https://github.com/TrackableEntities/TrackableEntities.Core/releases/tag/v6.0.0</PackageReleaseNotes>
+	<PackageReleaseNotes>https://github.com/TrackableEntities/TrackableEntities.Core/releases/tag/v7.0.0</PackageReleaseNotes>
 	<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageId>TrackableEntities.EF.Core</PackageId>
 	<GenerateDocumentationFile>True</GenerateDocumentationFile>
@@ -22,7 +22,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="6.0.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.0" />
   </ItemGroup>
 
   <ItemGroup>

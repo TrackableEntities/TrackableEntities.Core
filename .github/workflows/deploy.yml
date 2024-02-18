@@ -7,8 +7,15 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        dotnet-version: [8.x]
-        
+        dotnet-version: [8.x]    
+    services:
+      mssql:
+        image: mcr.microsoft.com/mssql/server:2019-latest
+        env:
+          SA_PASSWORD: trackable_core
+          ACCEPT_EULA: 'Y'
+        ports:
+          - 1433:1433
     steps:
     - name: Checkout
       uses: actions/checkout@v2

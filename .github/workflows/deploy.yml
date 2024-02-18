@@ -44,7 +44,7 @@ jobs:
         ConnectionString: Data Source=localhost;User ID=sa;Password=trackable_core!@44;MultipleActiveResultSets=True;Encrypt=False;
         
     - name: Pack
-      run: dotnet pack -c Release -p:PackageVersion=${{ steps.gitversion.outputs.nuGetVersion }} -p:IncludeSymbols=true -p:SymbolPackageFormat=snupkg
+      run: dotnet build -c Release -p:PackageVersion=${{ steps.gitversion.outputs.nuGetVersion }} -p:IncludeSymbols=true -p:SymbolPackageFormat=snupkg
    
     - name: Publish
       if: github.event_name != 'pull_request' && (github.ref_name == 'master')

@@ -26,9 +26,7 @@ namespace TrackableEntities.EF.Core.Tests.Helpers
             }
             else
             {
-                _options = new DbContextOptionsBuilder<NorthwindDbContext>()
-                    .UseSqlServer(@"Data Source=(localdb)\MSSQLLocalDB; Initial Catalog=NorthwindTest; Integrated Security=True; MultipleActiveResultSets=True")
-                    .Options;
+                _options = DbContextOptionsHelper.GetContextOptions<NorthwindDbContext>("NorthwindTest");
             }
             _context = new NorthwindDbContext(_options);
             _context.Database.EnsureCreated(); // If login error, manually create NorthwindTest database

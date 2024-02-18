@@ -1,25 +1,10 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
     <PackageId>TrackableEntities.Common.Core</PackageId>
-    <PackageVersion>8.0.0</PackageVersion>
-    <Authors>Tony Sneed</Authors>
-	<Company>Tony Sneed</Company>
     <Title>Trackable Entities Common</Title>
     <Description>Assembly containing TrackingState enum and ITrackable, IMergeable interfaces.</Description>
-    <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
-    <PackageReleaseNotes>https://github.com/TrackableEntities/TrackableEntities.Core/releases/tag/v8.0.0</PackageReleaseNotes>
     <PackageTags>change-tracking entity-framework-core n-tier</PackageTags>
-    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <PackageLicenseExpression>MIT</PackageLicenseExpression>
-	<PackageProjectUrl>https://github.com/TrackableEntities/TrackableEntities.Core</PackageProjectUrl>
-    <PackageIcon>icon.png</PackageIcon>
-	<GenerateDocumentationFile>True</GenerateDocumentationFile>
   </PropertyGroup>
-
-  <ItemGroup>
-    <None Include="icon.png" Pack="true" Visible="false" PackagePath="" />
-  </ItemGroup>
-
+  
 </Project>

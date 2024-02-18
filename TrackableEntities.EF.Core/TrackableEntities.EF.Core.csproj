@@ -1,25 +1,11 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
-    <PackageVersion>8.0.0</PackageVersion>
-    <Authors>Tony Sneed</Authors>
-    <Company>Tony Sneed</Company>
+    <PackageId>TrackableEntities.EF.Core</PackageId>
     <Title>Trackable Entities for EF Core</Title>
     <Description>Provides an ApplyChanges extension method for DbContext that sets EntityState on trackable entities, so they can be saved by a service in a single transaction</Description>
-    <PackageLicenseExpression>MIT</PackageLicenseExpression>
-	<PackageProjectUrl>https://github.com/TrackableEntities/TrackableEntities.Core</PackageProjectUrl>
-    <PackageIcon>icon.png</PackageIcon>
     <PackageTags>change-tracking entity-framework-core n-tier</PackageTags>
-	<PackageReleaseNotes>https://github.com/TrackableEntities/TrackableEntities.Core/releases/tag/v7.0.0</PackageReleaseNotes>
-	<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <PackageId>TrackableEntities.EF.Core</PackageId>
-	<GenerateDocumentationFile>True</GenerateDocumentationFile>
   </PropertyGroup>
-
-  <ItemGroup>
-    <None Include="icon.png" Pack="true" Visible="false" PackagePath="" />
-  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.0" />

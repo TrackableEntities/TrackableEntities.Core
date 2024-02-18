@@ -12,7 +12,7 @@ jobs:
       mssql:
         image: mcr.microsoft.com/mssql/server:2019-latest
         env:
-          SA_PASSWORD: trackable_core
+          SA_PASSWORD: trackable_core!@44
           ACCEPT_EULA: 'Y'
         ports:
           - 1433:1433
@@ -40,6 +40,8 @@ jobs:
 
     - name: Run Tests
       run: dotnet test
+      env:
+        ConnectionString: Data Source=localhost;User ID=sa;Password=trackable_core!@44;MultipleActiveResultSets=True;Encrypt=False;
         
     - name: Pack
       run: dotnet pack -c Release -p:PackageVersion=${{ steps.gitversion.outputs.nuGetVersion }} -p:IncludeSymbols=true -p:SymbolPackageFormat=snupkg

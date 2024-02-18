@@ -25,9 +25,7 @@ namespace TrackableEntities.EF.Core.Tests.Helpers
             }
             else
             {
-                _options = new DbContextOptionsBuilder<FamilyDbContext>()
-                    .UseSqlServer(@"Data Source=(localdb)\MSSQLLocalDB; Initial Catelog=FamilyTest; Integrated Security=True; MultipleActiveResultSets=True")
-                    .Options;
+                _options = DbContextOptionsHelper.GetContextOptions<FamilyDbContext>("FamilyTest");
             }
             _context = new FamilyDbContext(_options);
             _context.Database.EnsureCreated();

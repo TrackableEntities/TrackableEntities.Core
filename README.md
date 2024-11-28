@@ -28,7 +28,7 @@ dotnet add package TrackableEntities.EF.Core
 
 ## Packages for Previous Versions of EntityFramework Core
 
-##### [EntityFramework Core v7](https://www.nuget.org/packages/TrackableEntities.EF.Core/8.0.0) | [EntityFramework Core v7](https://www.nuget.org/packages/TrackableEntities.EF.Core/7.0.0) | [EntityFramework Core v6](https://www.nuget.org/packages/TrackableEntities.EF.Core/6.0.0) | [EntityFramework Core v5](https://www.nuget.org/packages/TrackableEntities.EF.Core/5.0.1) | [EntityFramework Core v3](https://www.nuget.org/packages/TrackableEntities.EF.Core/3.1.1)
+##### [EntityFramework Core v8](https://www.nuget.org/packages/TrackableEntities.EF.Core/8.0.0) | [EntityFramework Core v7](https://www.nuget.org/packages/TrackableEntities.EF.Core/7.0.0) | [EntityFramework Core v6](https://www.nuget.org/packages/TrackableEntities.EF.Core/6.0.0) | [EntityFramework Core v5](https://www.nuget.org/packages/TrackableEntities.EF.Core/5.0.1) | [EntityFramework Core v3](https://www.nuget.org/packages/TrackableEntities.EF.Core/3.1.1)
 
 
 ## Trackable Entities Interfaces

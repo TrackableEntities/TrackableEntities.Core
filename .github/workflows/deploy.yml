@@ -7,7 +7,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        dotnet-version: [8.x]    
+        dotnet-version: [9.x]    
     services:
       mssql:
         image: mcr.microsoft.com/mssql/server:2019-latest
@@ -18,23 +18,23 @@ jobs:
           - 1433:1433
     steps:
     - name: Checkout
-      uses: actions/checkout@v2
+      uses: actions/checkout@v4
       with:
         fetch-depth: 0
  
     - name: Setup Dotnet
-      uses: actions/setup-dotnet@v1
+      uses: actions/setup-dotnet@v4
       with:
         dotnet-version: ${{ matrix.dotnet-version }}
         
     - name: Install GitVersion
-      uses: gittools/actions/gitversion/setup@v0.9.7
+      uses: gittools/actions/gitversion/setup@v0.11.0
       with:
         versionSpec: '5.x'        
         
     - name: GitVersion
       id: gitversion
-      uses: gittools/actions/gitversion/execute@v0.9.7
+      uses: gittools/actions/gitversion/execute@v0.11.0
       with:
         useConfigFile: true      
 
@@ -49,5 +49,5 @@ jobs:
     - name: Publish
       if: github.event_name != 'pull_request' && (github.ref_name == 'master')
       run: |
-        dotnet nuget push **/*.nupkg --source 'https://api.nuget.org/v3/index.json' -k ${{ secrets.NUGETKEY }} --skip-duplicate
-        dotnet nuget push **/*.snupkg --source 'https://api.nuget.org/v3/index.json' -k ${{ secrets.NUGETKEY }} --skip-duplicate
+        dotnet nuget push **/bin/Release/*.nupkg --source 'https://api.nuget.org/v3/index.json' -k ${{ secrets.NUGETKEY }} --skip-duplicate
+        dotnet nuget push **/bin/Release/*.snupkg --source 'https://api.nuget.org/v3/index.json' -k ${{ secrets.NUGETKEY }} --skip-duplicate

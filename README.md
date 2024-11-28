@@ -1,4 +1,4 @@
-# <img src="https://raw.githubusercontent.com/TrackableEntities/TrackableEntities.Core/develop/TrackableEntities.EF.Core/icon.png" width="32" height="32" /> Trackable Entities for Entity Framework Core
+# ![Icon](/TrackableEntities.EF.Core/icon-noborder.png) Trackable Entities for Entity Framework Core
 
 [![NuGet version](https://badge.fury.io/nu/TrackableEntities.EF.Core.svg)](https://badge.fury.io/nu/TrackableEntities.EF.Core)
 [![Downloads](https://img.shields.io/nuget/dt/TrackableEntities.EF.Core.svg?logo=nuget&color=green)](https://www.nuget.org/packages/TrackableEntities.EF.Core) 

@@ -12,7 +12,7 @@ Change-tracking across service boundaries with [ASP.NET Core](https://docs.micro
 
 ## Installation
 
-Trackable Entities for EF Core 8 is available as a NuGet package that can be installed in an ASP.NET Core Web API project that uses Entity Framework Core.
+Trackable Entities for EF Core 9 is available as a NuGet package that can be installed in an ASP.NET Core Web API project that uses Entity Framework Core.
 
 You can use the [Package Manager UI or Console](https://docs.microsoft.com/en-us/nuget/tools/package-manager-console) in Visual Studio to install the TE package.
 
@@ -28,7 +28,7 @@ dotnet add package TrackableEntities.EF.Core
 
 ## Packages for Previous Versions of EntityFramework Core
 
-##### [EntityFramework Core v7](https://www.nuget.org/packages/TrackableEntities.EF.Core/7.0.0) | [EntityFramework Core v6](https://www.nuget.org/packages/TrackableEntities.EF.Core/6.0.0) | [EntityFramework Core v5](https://www.nuget.org/packages/TrackableEntities.EF.Core/5.0.1) | [EntityFramework Core v3](https://www.nuget.org/packages/TrackableEntities.EF.Core/3.1.1)
+##### [EntityFramework Core v7](https://www.nuget.org/packages/TrackableEntities.EF.Core/8.0.0) | [EntityFramework Core v7](https://www.nuget.org/packages/TrackableEntities.EF.Core/7.0.0) | [EntityFramework Core v6](https://www.nuget.org/packages/TrackableEntities.EF.Core/6.0.0) | [EntityFramework Core v5](https://www.nuget.org/packages/TrackableEntities.EF.Core/5.0.1) | [EntityFramework Core v3](https://www.nuget.org/packages/TrackableEntities.EF.Core/3.1.1)
 
 
 ## Trackable Entities Interfaces

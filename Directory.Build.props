@@ -1,6 +1,6 @@
 <Project>
     <PropertyGroup>
-        <TargetFramework>net9.0</TargetFramework>
+        <TargetFramework>net10.0</TargetFramework>
         <Authors>Tony Sneed</Authors>
         <Company>Tony Sneed</Company>
         <NoWarn>$(NoWarn);CS1591</NoWarn>
@@ -12,7 +12,7 @@
         <GenerateDocumentationFile>True</GenerateDocumentationFile>
         <PackageReadmeFile>README.md</PackageReadmeFile>
         <PackageReleaseNotes>
-            https://github.com/TrackableEntities/TrackableEntities.Core/releases/tag/v9.0.0
+            https://github.com/TrackableEntities/TrackableEntities.Core/releases/tag/v10.0.0
         </PackageReleaseNotes>
     </PropertyGroup>
 

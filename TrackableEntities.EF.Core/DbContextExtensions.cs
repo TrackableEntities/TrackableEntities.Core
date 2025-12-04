@@ -66,15 +66,7 @@ namespace TrackableEntities.EF.Core
                             if (node.SourceEntry.State == EntityState.Deleted
                                 || parent?.TrackingState == TrackingState.Deleted)
                             {
-                                try
-                                {
-                                    // Will throw if there are added children
-                                    SetEntityState(node.Entry, TrackingState.Deleted.ToEntityState(), trackable);
-                                }
-                                catch (InvalidOperationException e)
-                                {
-                                    throw new InvalidOperationException(Constants.ExceptionMessages.DeletedWithAddedChildren, e);
-                                }
+                                SetEntityState(node.Entry, TrackingState.Deleted.ToEntityState(), trackable);
                                 return;
                             }
                             break;

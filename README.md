@@ -12,7 +12,7 @@ Change-tracking across service boundaries with [ASP.NET Core](https://docs.micro
 
 ## Installation
 
-Trackable Entities for EF Core 9 is available as a NuGet package that can be installed in an ASP.NET Core Web API project that uses Entity Framework Core.
+Trackable Entities for EF Core 10 is available as a NuGet package that can be installed in an ASP.NET Core Web API project that uses Entity Framework Core.
 
 You can use the [Package Manager UI or Console](https://docs.microsoft.com/en-us/nuget/tools/package-manager-console) in Visual Studio to install the TE package.
 
@@ -28,7 +28,17 @@ dotnet add package TrackableEntities.EF.Core
 
 ## Packages for Previous Versions of EntityFramework Core
 
-##### [EntityFramework Core v8](https://www.nuget.org/packages/TrackableEntities.EF.Core/8.0.0) | [EntityFramework Core v7](https://www.nuget.org/packages/TrackableEntities.EF.Core/7.0.0) | [EntityFramework Core v6](https://www.nuget.org/packages/TrackableEntities.EF.Core/6.0.0) | [EntityFramework Core v5](https://www.nuget.org/packages/TrackableEntities.EF.Core/5.0.1) | [EntityFramework Core v3](https://www.nuget.org/packages/TrackableEntities.EF.Core/3.1.1)
+##### [EntityFramework Core v9](https://www.nuget.org/packages/TrackableEntities.EF.Core/9.0.1) | [EntityFramework Core v8](https://www.nuget.org/packages/TrackableEntities.EF.Core/8.0.0) | [EntityFramework Core v7](https://www.nuget.org/packages/TrackableEntities.EF.Core/7.0.0) | [EntityFramework Core v6](https://www.nuget.org/packages/TrackableEntities.EF.Core/6.0.0) | [EntityFramework Core v5](https://www.nuget.org/packages/TrackableEntities.EF.Core/5.0.1) | [EntityFramework Core v3](https://www.nuget.org/packages/TrackableEntities.EF.Core/3.1.1)
+
+## EF Core 10 Behavior Changes
+
+EF Core 10 includes a change in entity state validation that affects how Trackable Entities handles certain edge cases:
+
+- **Deleted parent with Added children**: In EF Core 9 and earlier, attempting to delete an entity that had children marked as `Added` would throw an `InvalidOperationException`. EF Core 10 relaxes this validation and allows the operation to proceed.
+
+- **Impact**: If you previously relied on receiving an exception when accidentally marking a parent as `Deleted` while its children were marked as `Added`, this validation is no longer enforced by EF Core. The operation will now proceed, and the child entities will be set to `Deleted` along with their parent.
+
+- **Recommendation**: Ensure your client-side logic properly validates entity state combinations before sending object graphs to the server. Avoid marking parent entities as `Deleted` when child entities are marked as `Added`, as this represents a logical contradiction (you cannot delete a parent while simultaneously adding new children to it).
 
 
 ## Trackable Entities Interfaces
